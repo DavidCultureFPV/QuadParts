@@ -1,0 +1,65 @@
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { Search, Bell, Settings } from 'lucide-react';
+import { useInventoryStore } from '../store/inventoryStore';
+
+const Header: React.FC = () => {
+  const location = useLocation();
+  const [searchTerm, setSearchTerm] = useState('');
+  const { searchParts } = useInventoryStore();
+  
+  // Get the page title based on the current route
+  const getPageTitle = () => {
+    switch (location.pathname) {
+      case '/':
+        return 'Dashboard';
+      case '/inventory':
+        return 'Inventory';
+      case '/categories':
+        return 'Categories';
+      case '/todo':
+        return 'Things to Do';
+      case '/settings':
+        return 'Settings';
+      default:
+        if (location.pathname.startsWith('/parts/')) {
+          return 'Part Details';
+        }
+        return 'Drone Parts Inventory';
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    searchParts(searchTerm);
+  };
+
+  return (
+    <header className="bg-neutral-900 py-4 px-6 flex items-center justify-between border-b border-neutral-800">
+      <h1 className="text-xl font-semibold text-white lg:ml-0 ml-8">{getPageTitle()}</h1>
+      
+      <div className="flex items-center space-x-4">
+        <form onSubmit={handleSearch} className="relative hidden sm:block">
+          <input
+            type="text"
+            placeholder="Search parts..."
+            className="bg-neutral-800 text-white px-4 py-2 rounded-full pl-10 w-64 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 h-4 w-4" />
+        </form>
+        
+        <button className="p-2 rounded-full hover:bg-neutral-800 transition-colors">
+          <Bell className="h-5 w-5 text-neutral-300" />
+        </button>
+        
+        <button className="p-2 rounded-full hover:bg-neutral-800 transition-colors">
+          <Settings className="h-5 w-5 text-neutral-300" />
+        </button>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
