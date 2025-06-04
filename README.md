@@ -10,7 +10,7 @@ Drone / FPV inventory application where you can keep track of your parts, builds
    
    <code>npm install  #installs dependencies</code>
 
-   npm run dev  #to deploy the code
+   <code>npm run dev  #to deploy the code</code>
 
    On your local machine, pull up the browser and go to this address localhost:5173
 
