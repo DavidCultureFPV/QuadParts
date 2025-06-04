@@ -11,6 +11,7 @@ Drone / FPV inventory application where you can keep track of your parts, builds
    <code>npm install  #installs dependencies</code>
 
    <code>npm run dev  #to deploy the code</code>
+   <i> You might have to run the npm audit fix if prompted to do so. Dont worry the app wont break by doing so</i>
 
    On your local machine, pull up the browser and go to this address localhost:5173
 
