@@ -18,3 +18,4 @@ Drone / FPV inventory application where you can keep track of your parts, builds
    I plan on releasing android, windows and linux standalone versions of this app as well. 
   Currently working on the docker-compose version of this app.
 
+Demo: https://fpv.builders/
