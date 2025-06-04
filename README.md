@@ -8,7 +8,7 @@ Drone / FPV inventory application where you can keep track of your parts, builds
 
    After Node /NPM  is installed on your system, run the two commands below to deploy
    
-   npm install  #installs dependencies
+   <code>npm install  #installs dependencies</code>
 
    npm run dev  #to deploy the code
 
