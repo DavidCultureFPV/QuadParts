@@ -14,3 +14,7 @@ Drone / FPV inventory application where you can keep track of your parts, builds
 
    On your local machine, pull up the browser and go to this address localhost:5173
 
+   NOTE! I will be updating this often so please be cautious with adding allot of your data and updating your version of QuadParts with newer versions of the app released here. Currently fixing the database export function to combat this issue.
+   I plan on releasing android, windows and linux standalone versions of this app as well. 
+  Currently working on the docker-compose version of this app.
+
