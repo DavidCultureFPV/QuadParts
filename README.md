@@ -6,7 +6,7 @@ Drone / FPV inventory application where you can keep track of your parts, builds
 2. Ensure that you have Node installed on your development machine ( windows, linux or other)
    Follow the tutorial here to install the latest version of node https://www.geeksforgeeks.org/how-to-download-and-install-node-js-and-npm/
 
-   After Node /NPM  is installed on your system, run the two commands below to deploy
+   After Node /NPM  is installed on your system, open up your terminal or command prompt screen and run the two commands below to deploy:
    
    <code>npm install  #installs dependencies</code>
 
