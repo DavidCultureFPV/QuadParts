@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useInventoryStore } from '../store/inventoryStore';
+import { useStorageLocationStore } from '../store/storageLocationStore';
 import { Edit, Trash2, AlertTriangle, ArrowLeft, Image, Plus, Minus } from 'lucide-react';
 import { useToaster } from '../components/ui/Toaster';
 
 const PartDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getPart, updatePart, deletePart } = useInventoryStore();
+  const { getPart, updatePart, deletePart, addPart, categories } = useInventoryStore();
+  const { locations } = useStorageLocationStore();
   const { addToast } = useToaster();
   
   const [part, setPart] = useState(id && id !== 'new' ? getPart(id) : null);
@@ -50,6 +52,12 @@ const PartDetails: React.FC = () => {
     }
   }, [part]);
   
+  // Get subcategories for selected category
+  const getSubcategoriesForCategory = (categoryName: string) => {
+    const category = categories.find(cat => cat.name === categoryName);
+    return category ? category.subcategories : [];
+  };
+  
   // Format currency
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
@@ -58,12 +66,22 @@ const PartDetails: React.FC = () => {
   // Handle form change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: name === 'quantity' || name === 'price' || name === 'inUse' 
-        ? parseFloat(value) 
-        : value
-    }));
+    
+    // If category changes, reset subcategory
+    if (name === 'category') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+        subcategory: '' // Reset subcategory when category changes
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: name === 'quantity' || name === 'price' || name === 'inUse' 
+          ? parseFloat(value) || 0
+          : value
+      }));
+    }
   };
   
   // Handle image URL change
@@ -115,19 +133,20 @@ const PartDetails: React.FC = () => {
     // Filter out empty image URLs
     const filteredImageUrls = formData.imageUrls.filter(url => url.trim() !== '');
     
+    const partData = {
+      ...formData,
+      imageUrls: filteredImageUrls.length > 0 ? filteredImageUrls : ['https://images.unsplash.com/photo-1579829215132-9b20155a2c7c?q=80&w=300']
+    };
+    
     if (id && id !== 'new') {
       // Update existing part
-      updatePart(id, {
-        ...formData,
-        imageUrls: filteredImageUrls.length > 0 ? filteredImageUrls : ['https://images.unsplash.com/photo-1579829215132-9b20155a2c7c?q=80&w=300']
-      });
+      updatePart(id, partData);
       setPart(getPart(id));
       setIsEditing(false);
       addToast('success', `Part "${formData.name}" updated successfully`);
     } else {
       // Add new part
-      // Note: In a real application, we would need to handle the newly created part's ID
-      // and redirect to the detail page. For simplicity, we just navigate back to inventory.
+      addPart(partData);
       addToast('success', `Part "${formData.name}" created successfully`);
       navigate('/inventory');
     }
@@ -182,46 +201,79 @@ const PartDetails: React.FC = () => {
                 <label htmlFor="category" className="block text-sm font-medium text-neutral-300 mb-1">
                   Category *
                 </label>
-                <input
-                  type="text"
+                <select
                   id="category"
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
                   className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder="Category"
                   required
-                />
+                >
+                  <option value="">Select a category</option>
+                  {categories.map(category => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               
               <div>
                 <label htmlFor="subcategory" className="block text-sm font-medium text-neutral-300 mb-1">
                   Subcategory
                 </label>
-                <input
-                  type="text"
+                <select
                   id="subcategory"
                   name="subcategory"
                   value={formData.subcategory}
                   onChange={handleChange}
                   className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder="Subcategory (optional)"
-                />
+                  disabled={!formData.category}
+                >
+                  <option value="">Select a subcategory (optional)</option>
+                  {getSubcategoriesForCategory(formData.category).map(subcategory => (
+                    <option key={subcategory.id} value={subcategory.name}>
+                      {subcategory.name}
+                    </option>
+                  ))}
+                </select>
+                {!formData.category && (
+                  <p className="text-xs text-neutral-500 mt-1">
+                    Select a category first to see available subcategories
+                  </p>
+                )}
               </div>
               
               <div>
                 <label htmlFor="location" className="block text-sm font-medium text-neutral-300 mb-1">
                   Storage Location
                 </label>
-                <input
-                  type="text"
+                <select
                   id="location"
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
                   className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder="Where this part is stored"
-                />
+                >
+                  <option value="">Select a storage location</option>
+                  {locations.map(location => (
+                    <option key={location.id} value={location.name}>
+                      {location.name} ({location.type})
+                    </option>
+                  ))}
+                </select>
+                <div className="flex items-center justify-between mt-1">
+                  <p className="text-xs text-neutral-500">
+                    Choose where this part is stored
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/storage')}
+                    className="text-xs text-primary-400 hover:text-primary-300 underline"
+                  >
+                    Manage locations
+                  </button>
+                </div>
               </div>
             </div>
             

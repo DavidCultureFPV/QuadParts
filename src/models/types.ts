@@ -36,6 +36,17 @@ export interface Subcategory {
   parentId: string;
 }
 
+export interface StorageLocation {
+  id: string;
+  name: string;
+  description?: string;
+  type: 'shelf' | 'drawer' | 'box' | 'cabinet' | 'room' | 'other';
+  capacity?: number;
+  currentItems?: number;
+  dateAdded: string;
+  lastModified?: string;
+}
+
 export interface TodoItem {
   id: string;
   title: string;

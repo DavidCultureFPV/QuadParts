@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Package, Tags, CheckSquare, Settings, 
-  LogOut, Wrench, Camera, Link as LinkIcon, Menu, X
+  LogOut, Wrench, Camera, Link as LinkIcon, Menu, X, MapPin
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -17,6 +17,7 @@ const Sidebar: React.FC = () => {
     { icon: <LayoutDashboard size={20} />, text: 'Dashboard', path: '/' },
     { icon: <Package size={20} />, text: 'Inventory', path: '/inventory' },
     { icon: <Tags size={20} />, text: 'Categories', path: '/categories' },
+    { icon: <MapPin size={20} />, text: 'Storage Locations', path: '/storage' },
     { icon: <Wrench size={20} />, text: 'Build Notes', path: '/builds' },
     { icon: <Camera size={20} />, text: 'Gallery', path: '/gallery' },
     { icon: <LinkIcon size={20} />, text: 'Links', path: '/links' },

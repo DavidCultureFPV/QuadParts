@@ -26,20 +26,36 @@ const Categories: React.FC = () => {
   // Submit new category
   const handleCategorySubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!newCategory.name.trim()) {
       addToast('error', 'Category name is required');
       return;
     }
     
-    addCategory({
-      name: newCategory.name,
-      description: newCategory.description,
-      color: newCategory.color
-    });
+    // Check if category name already exists
+    const existingCategory = categories.find(cat => 
+      cat.name.toLowerCase() === newCategory.name.toLowerCase()
+    );
     
-    setNewCategory({ name: '', description: '', color: '#3B82F6' });
-    setShowNewCategoryForm(false);
-    addToast('success', `Category "${newCategory.name}" created successfully`);
+    if (existingCategory) {
+      addToast('error', 'A category with this name already exists');
+      return;
+    }
+    
+    try {
+      addCategory({
+        name: newCategory.name.trim(),
+        description: newCategory.description.trim(),
+        color: newCategory.color
+      });
+      
+      setNewCategory({ name: '', description: '', color: '#3B82F6' });
+      setShowNewCategoryForm(false);
+      addToast('success', `Category "${newCategory.name}" created successfully`);
+    } catch (error) {
+      console.error('Error creating category:', error);
+      addToast('error', 'Failed to create category. Please try again.');
+    }
   };
   
   // Submit new subcategory
@@ -50,15 +66,33 @@ const Categories: React.FC = () => {
       return;
     }
     
-    addSubcategory(
-      newSubcategory.categoryId,
-      newSubcategory.name,
-      newSubcategory.description
-    );
+    // Check if subcategory name already exists in this category
+    const parentCategory = categories.find(cat => cat.id === newSubcategory.categoryId);
+    if (parentCategory) {
+      const existingSubcategory = parentCategory.subcategories.find(sub => 
+        sub.name.toLowerCase() === newSubcategory.name.toLowerCase()
+      );
+      
+      if (existingSubcategory) {
+        addToast('error', 'A subcategory with this name already exists in this category');
+        return;
+      }
+    }
     
-    setNewSubcategory({ name: '', description: '', categoryId: '' });
-    setShowNewSubcategoryForm(false);
-    addToast('success', `Subcategory "${newSubcategory.name}" created successfully`);
+    try {
+      addSubcategory(
+        newSubcategory.categoryId,
+        newSubcategory.name.trim(),
+        newSubcategory.description.trim()
+      );
+      
+      setNewSubcategory({ name: '', description: '', categoryId: '' });
+      setShowNewSubcategoryForm(false);
+      addToast('success', `Subcategory "${newSubcategory.name}" created successfully`);
+    } catch (error) {
+      console.error('Error creating subcategory:', error);
+      addToast('error', 'Failed to create subcategory. Please try again.');
+    }
   };
   
   // Delete a category
@@ -71,8 +105,13 @@ const Categories: React.FC = () => {
       return;
     }
     
-    deleteCategory(category.id);
-    addToast('success', `Category "${category.name}" deleted successfully`);
+    try {
+      deleteCategory(category.id);
+      addToast('success', `Category "${category.name}" deleted successfully`);
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      addToast('error', 'Failed to delete category. Please try again.');
+    }
   };
   
   // Delete a subcategory
@@ -90,8 +129,13 @@ const Categories: React.FC = () => {
       return;
     }
     
-    deleteSubcategory(categoryId, subcategory.id);
-    addToast('success', `Subcategory "${subcategory.name}" deleted successfully`);
+    try {
+      deleteSubcategory(categoryId, subcategory.id);
+      addToast('success', `Subcategory "${subcategory.name}" deleted successfully`);
+    } catch (error) {
+      console.error('Error deleting subcategory:', error);
+      addToast('error', 'Failed to delete subcategory. Please try again.');
+    }
   };
   
   // Count parts in category and subcategories
@@ -156,6 +200,7 @@ const Categories: React.FC = () => {
                 className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 placeholder="Category name"
                 required
+                maxLength={50}
               />
             </div>
             
@@ -170,6 +215,7 @@ const Categories: React.FC = () => {
                 className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 placeholder="Category description (optional)"
                 rows={2}
+                maxLength={200}
               />
             </div>
             
@@ -199,14 +245,18 @@ const Categories: React.FC = () => {
             <div className="flex justify-end space-x-2 pt-2">
               <button
                 type="button"
-                onClick={() => setShowNewCategoryForm(false)}
+                onClick={() => {
+                  setShowNewCategoryForm(false);
+                  setNewCategory({ name: '', description: '', color: '#3B82F6' });
+                }}
                 className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors"
+                disabled={!newCategory.name.trim()}
+                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Create Category
               </button>
@@ -251,6 +301,7 @@ const Categories: React.FC = () => {
                 className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 placeholder="Subcategory name"
                 required
+                maxLength={50}
               />
             </div>
             
@@ -265,20 +316,25 @@ const Categories: React.FC = () => {
                 className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                 placeholder="Subcategory description (optional)"
                 rows={2}
+                maxLength={200}
               />
             </div>
             
             <div className="flex justify-end space-x-2 pt-2">
               <button
                 type="button"
-                onClick={() => setShowNewSubcategoryForm(false)}
+                onClick={() => {
+                  setShowNewSubcategoryForm(false);
+                  setNewSubcategory({ name: '', description: '', categoryId: '' });
+                }}
                 className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors"
+                disabled={!newSubcategory.name.trim() || !newSubcategory.categoryId}
+                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Create Subcategory
               </button>

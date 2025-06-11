@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
 import Inventory from './pages/Inventory';
 import Categories from './pages/Categories';
+import StorageLocations from './pages/StorageLocations';
 import BuildNotes from './pages/BuildNotes';
 import BuildNoteDetail from './pages/BuildNoteDetail';
 import Gallery from './pages/Gallery';
@@ -20,7 +21,11 @@ function App() {
   const { theme } = useThemeStore();
 
   useEffect(() => {
+    console.log('App theme changed to:', theme);
     document.documentElement.setAttribute('data-theme', theme);
+    
+    // Force a re-render by updating body class
+    document.body.className = `theme-${theme}`;
   }, [theme]);
 
   return (
@@ -34,6 +39,7 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/categories" element={<Categories />} />
+              <Route path="/storage" element={<StorageLocations />} />
               <Route path="/builds" element={<BuildNotes />} />
               <Route path="/builds/:id" element={<BuildNoteDetail />} />
               <Route path="/gallery" element={<Gallery />} />

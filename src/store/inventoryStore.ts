@@ -135,7 +135,6 @@ interface InventoryState {
   updateSubcategory: (categoryId: string, subcategoryId: string, name: string, description?: string) => void;
   deleteSubcategory: (categoryId: string, subcategoryId: string) => void;
   
-  searchParts: (searchTerm: string) => void;
   setFilterOptions: (options: Partial<FilterOptions>) => void;
   applyFilters: () => void;
 }
@@ -163,10 +162,10 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       const newParts = [...state.parts, newPart];
       saveToStorage('droneParts', newParts);
       return { 
-        parts: newParts,
-        filteredParts: newParts
+        parts: newParts
       };
     });
+    get().applyFilters();
   },
 
   updatePart: (id, partData) => {
@@ -178,10 +177,10 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       );
       saveToStorage('droneParts', newParts);
       return {
-        parts: newParts,
-        filteredParts: newParts
+        parts: newParts
       };
     });
+    get().applyFilters();
   },
 
   deletePart: (id) => {
@@ -189,10 +188,10 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
       const newParts = state.parts.filter((part) => part.id !== id);
       saveToStorage('droneParts', newParts);
       return {
-        parts: newParts,
-        filteredParts: newParts
+        parts: newParts
       };
     });
+    get().applyFilters();
   },
 
   getPart: (id) => {
@@ -320,13 +319,6 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
   },
 
   // Search and filtering
-  searchParts: (searchTerm) => {
-    set((state) => ({
-      filterOptions: { ...state.filterOptions, searchTerm },
-    }));
-    get().applyFilters();
-  },
-
   setFilterOptions: (options) => {
     set((state) => ({
       filterOptions: { ...state.filterOptions, ...options },

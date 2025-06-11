@@ -8,9 +8,13 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>((set) => ({
   theme: localStorage.getItem('theme') || 'dark',
   setTheme: (theme) => {
+    console.log('Setting theme to:', theme);
+    
+    // Save to localStorage
     localStorage.setItem('theme', theme);
+    
+    // Update document attribute
     document.documentElement.setAttribute('data-theme', theme);
-    set({ theme });
     
     // Update meta theme-color
     const themeColors = {
@@ -22,7 +26,14 @@ export const useThemeStore = create<ThemeState>((set) => ({
       blackOrange: '#000000'
     };
     
-    document.querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', themeColors[theme as keyof typeof themeColors] || '#131419');
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute('content', themeColors[theme as keyof typeof themeColors] || '#131419');
+    }
+    
+    // Force a re-render by updating the store
+    set({ theme });
+    
+    console.log('Theme updated to:', theme);
   },
 }));
