@@ -13,7 +13,7 @@ Demo: https://fpv.builders/
 ---
 <b>Notable Updates:</b>
 
-  1. Added the liquid glass effect as seen on Iphones. demo page can be see at https://fpv.builders/liquid-demo or on your local machine at localhost:5173/liquid-demo
+  1. Added the liquid glass effect as seen on Iphones. demo page can be see at https://fpv.builders/liquid-demo or on your local machine at http://localhost:5173/liquid-demo
   2. Themes are now working and you have the option to to customize your own ( still working threw kinks on the "custom" theming)
   3. Distiguish if inventory items is "In Use" or "In Stock".
   4. Editing inventory item issues seen in previous versions is now fixed
