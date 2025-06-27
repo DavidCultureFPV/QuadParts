@@ -56,7 +56,7 @@ FOR THOSE WHO'S UPGRADING FROM THE RELEASE ON 6/10/2025, PLEASE EXPORT YOUR DATA
    <BR>
 _above commands needs to be ran from from within the QuadParts folder. terminal-->cd /where/you/have/quadparts/unzipped_
    **Note:** _If you want to be able to get to QuadParts from other devices on your network, run the command below_
-   <code> npm run dev -- --host</code>
+   <code> npm run dev -- --host</code> _(note: your data from the host wont be seen on the network client. export from the host and load on the client. currently working on fixing this issue for the next version. )_
    <i> You might have to run the npm audit fix if prompted to do so. Dont worry the app wont break by doing so</i>
 
    On your local machine, pull up the browser and go to this address localhost:5173
