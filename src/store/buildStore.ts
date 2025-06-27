@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { BuildNote, BuildNoteEntry } from '../models/types';
 
+const STORAGE_KEY = 'quadparts_builds_data';
+
 interface BuildState {
   builds: BuildNote[];
   filteredBuilds: BuildNote[];
@@ -74,9 +76,51 @@ const sampleBuilds: BuildNote[] = [
   }
 ];
 
+// Load saved data from localStorage
+const loadSavedData = () => {
+  try {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      
+      // Handle different data structures
+      let builds;
+      if (Array.isArray(parsed)) {
+        // If the data is directly an array
+        builds = parsed;
+      } else if (parsed && typeof parsed === 'object' && Array.isArray(parsed.builds)) {
+        // If the data is wrapped in an object with 'builds' property
+        builds = parsed.builds;
+      } else {
+        console.warn('Unexpected builds data structure:', parsed);
+        return { builds: sampleBuilds };
+      }
+      
+      // Ensure dates are properly parsed
+      const parsedBuilds = builds.map((build: any) => ({
+        ...build,
+        dateCreated: new Date(build.dateCreated).toISOString(),
+        lastModified: build.lastModified ? new Date(build.lastModified).toISOString() : undefined,
+        notes: Array.isArray(build.notes) ? build.notes.map((note: any) => ({
+          ...note,
+          dateAdded: new Date(note.dateAdded).toISOString()
+        })) : []
+      }));
+      
+      console.log(`Loaded ${parsedBuilds.length} builds from localStorage`);
+      return { builds: parsedBuilds };
+    }
+  } catch (error) {
+    console.error('Error loading builds data from localStorage:', error);
+  }
+  return { builds: sampleBuilds };
+};
+
+const { builds: savedBuilds } = loadSavedData();
+
 export const useBuildStore = create<BuildState>((set, get) => ({
-  builds: sampleBuilds,
-  filteredBuilds: sampleBuilds,
+  builds: savedBuilds,
+  filteredBuilds: savedBuilds,
   filterOptions: {
     status: ['planning', 'in-progress', 'completed', 'archived'],
     searchTerm: ''
@@ -95,6 +139,10 @@ export const useBuildStore = create<BuildState>((set, get) => ({
       builds: [...state.builds, newBuild]
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { builds } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ builds }));
   },
   
   updateBuild: (id, buildData) => {
@@ -110,6 +158,10 @@ export const useBuildStore = create<BuildState>((set, get) => ({
       )
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { builds } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ builds }));
   },
   
   deleteBuild: (id) => {
@@ -117,6 +169,10 @@ export const useBuildStore = create<BuildState>((set, get) => ({
       builds: state.builds.filter((build) => build.id !== id)
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { builds } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ builds }));
   },
   
   getBuild: (id) => {
@@ -141,6 +197,10 @@ export const useBuildStore = create<BuildState>((set, get) => ({
           : build
       )
     }));
+    
+    // Save to localStorage
+    const { builds } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ builds }));
   },
   
   updateBuildNote: (buildId, noteId, noteData) => {
@@ -159,6 +219,10 @@ export const useBuildStore = create<BuildState>((set, get) => ({
           : build
       )
     }));
+    
+    // Save to localStorage
+    const { builds } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ builds }));
   },
   
   deleteBuildNote: (buildId, noteId) => {
@@ -173,6 +237,10 @@ export const useBuildStore = create<BuildState>((set, get) => ({
           : build
       )
     }));
+    
+    // Save to localStorage
+    const { builds } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ builds }));
   },
   
   setFilterOptions: (options) => {

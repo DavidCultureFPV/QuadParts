@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2, Edit, Image } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Edit, Image, Tag, ChevronDown } from 'lucide-react';
 import { useGalleryStore } from '../store/galleryStore';
 import { GalleryItem } from '../models/types';
 import { useToaster } from '../components/ui/Toaster';
@@ -8,11 +8,11 @@ import { useToaster } from '../components/ui/Toaster';
 const GalleryItemDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { getItem, addItem, updateItem, deleteItem } = useGalleryStore();
+  const { getItem, addItem, updateItem, deleteItem, customTags } = useGalleryStore();
   const { addToast } = useToaster();
   
   const [item, setItem] = useState<GalleryItem | null>(
-    id && id !== 'new' ? getItem(id) : null
+    id && id !== 'new' ? getItem(id) || null : null
   );
   
   const [isEditing, setIsEditing] = useState(id === 'new');
@@ -36,6 +36,8 @@ const GalleryItemDetail: React.FC = () => {
   
   // New tag input
   const [newTag, setNewTag] = useState('');
+  const [showTagSuggestions, setShowTagSuggestions] = useState(false);
+  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   
   // Initialize form data when component mounts or item changes
   useEffect(() => {
@@ -56,6 +58,38 @@ const GalleryItemDetail: React.FC = () => {
       });
     }
   }, [item]);
+  
+  // Filter tag suggestions based on input
+  useEffect(() => {
+    console.log('Tag suggestions effect triggered:', {
+      newTag,
+      customTagsLength: customTags.length,
+      customTags,
+      formDataTags: formData.tags
+    });
+
+    if (newTag.trim()) {
+      // Show suggestions even if input doesn't match exactly
+      const filtered = customTags
+        .filter(tag => 
+          tag.toLowerCase().includes(newTag.toLowerCase()) && 
+          !formData.tags.includes(tag)
+        )
+        .slice(0, 5); // Limit to 5 suggestions
+      
+      console.log('Filtered suggestions:', filtered);
+      setFilteredSuggestions(filtered);
+      setShowTagSuggestions(filtered.length > 0);
+    } else {
+      // When input is empty, show all available tags (excluding already added ones)
+      const availableTags = customTags
+        .filter(tag => !formData.tags.includes(tag))
+        .slice(0, 5);
+      console.log('Available tags when empty:', availableTags);
+      setFilteredSuggestions(availableTags);
+      setShowTagSuggestions(availableTags.length > 0);
+    }
+  }, [newTag, customTags, formData.tags]);
   
   // Handle form change
   const handleChange = (
@@ -111,14 +145,32 @@ const GalleryItemDetail: React.FC = () => {
     e.preventDefault();
     if (!newTag.trim()) return;
     
-    const tag = newTag.toLowerCase().trim();
-    if (!formData.tags.includes(tag)) {
-      setFormData(prev => ({
-        ...prev,
-        tags: [...prev.tags, tag]
-      }));
+    const tag = newTag.toLowerCase().trim().replace(/\s+/g, '-');
+    
+    // Validate tag format
+    if (!/^[a-z0-9-]+$/.test(tag)) {
+      addToast('error', 'Tags can only contain letters, numbers, and hyphens');
+      return;
     }
+    
+    // Check for duplicates
+    if (formData.tags.includes(tag)) {
+      addToast('error', 'Tag already exists');
+      return;
+    }
+    
+    // Check minimum length
+    if (tag.length < 2) {
+      addToast('error', 'Tags must be at least 2 characters long');
+      return;
+    }
+    
+    setFormData(prev => ({
+      ...prev,
+      tags: [...prev.tags, tag]
+    }));
     setNewTag('');
+    addToast('success', `Tag "${tag}" added`);
   };
   
   // Remove tag
@@ -127,6 +179,17 @@ const GalleryItemDetail: React.FC = () => {
       ...prev,
       tags: prev.tags.filter(tag => tag !== tagToRemove)
     }));
+  };
+  
+  // Add tag from suggestions
+  const handleAddTagFromSuggestion = (suggestedTag: string) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: [...prev.tags, suggestedTag]
+    }));
+    setNewTag('');
+    setShowTagSuggestions(false);
+    addToast('success', `Tag "${suggestedTag}" added`);
   };
   
   // Handle form submission
@@ -155,7 +218,7 @@ const GalleryItemDetail: React.FC = () => {
     
     if (id && id !== 'new') {
       updateItem(id, itemData);
-      setItem(getItem(id));
+      setItem(getItem(id) || null);
       setIsEditing(false);
       addToast('success', 'Gallery item updated successfully');
     } else {
@@ -201,7 +264,7 @@ const GalleryItemDetail: React.FC = () => {
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-neutral-800 p-6 rounded-lg">
+          <div className="liquid-glass bg-neutral-800 p-6 rounded-lg">
             <h3 className="text-lg font-medium text-white mb-4">Basic Information</h3>
             
             <div className="space-y-4">
@@ -215,7 +278,7 @@ const GalleryItemDetail: React.FC = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="Build name"
                   required
                 />
@@ -230,7 +293,7 @@ const GalleryItemDetail: React.FC = () => {
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="Build description"
                   rows={3}
                 />
@@ -244,39 +307,102 @@ const GalleryItemDetail: React.FC = () => {
                   {formData.tags.map(tag => (
                     <span
                       key={tag}
-                      className="px-2 py-1 bg-neutral-700 text-neutral-300 rounded-lg text-sm flex items-center gap-2"
+                      className="liquid-glass px-2 py-1 bg-neutral-700 text-neutral-300 rounded-lg text-sm flex items-center gap-2"
                     >
+                      <Tag size={12} />
                       {tag}
                       <button
                         type="button"
                         onClick={() => handleRemoveTag(tag)}
-                        className="text-neutral-400 hover:text-red-400"
+                        className="liquid-glass text-neutral-400 hover:text-red-400 transition-all duration-300"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={12} />
                       </button>
                     </span>
                   ))}
                 </div>
-                <form onSubmit={handleAddTag} className="flex gap-2">
-                  <input
-                    type="text"
-                    value={newTag}
-                    onChange={(e) => setNewTag(e.target.value)}
-                    className="flex-1 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    placeholder="Add a tag"
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors"
-                  >
-                    Add
-                  </button>
-                </form>
+                
+                <div className="relative">
+                  <form onSubmit={handleAddTag} className="flex gap-2">
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        value={newTag}
+                        onChange={(e) => setNewTag(e.target.value)}
+                        onFocus={() => {
+                          // Show suggestions when input is focused
+                          const availableTags = customTags
+                            .filter(tag => !formData.tags.includes(tag))
+                            .slice(0, 5);
+                          setFilteredSuggestions(availableTags);
+                          setShowTagSuggestions(availableTags.length > 0);
+                        }}
+                        onBlur={() => setTimeout(() => setShowTagSuggestions(false), 200)}
+                        className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
+                        placeholder="Add a tag (letters, numbers, hyphens only)"
+                      />
+                      {showTagSuggestions && (
+                        <div className="absolute top-full left-0 right-0 z-50 mt-1 liquid-glass border border-white/20 rounded-lg shadow-xl backdrop-blur-sm max-h-48 overflow-y-auto">
+                          <div className="p-2">
+                            <div className="text-xs text-neutral-400 mb-2 px-2">Suggestions:</div>
+                            {filteredSuggestions.length > 0 ? (
+                              filteredSuggestions.map(suggestion => (
+                                <button
+                                  key={suggestion}
+                                  type="button"
+                                  onClick={() => handleAddTagFromSuggestion(suggestion)}
+                                  className="w-full text-left px-2 py-1 text-sm text-neutral-300 hover:bg-neutral-600 rounded transition-colors flex items-center gap-2"
+                                >
+                                  <Tag size={12} />
+                                  {suggestion}
+                                </button>
+                              ))
+                            ) : (
+                              <div className="px-2 py-1 text-xs text-neutral-500">
+                                No matching tags found. Type to create a new tag.
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      type="submit"
+                      className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-all duration-300 flex items-center gap-2"
+                    >
+                      <Plus size={14} />
+                      Add
+                    </button>
+                  </form>
+                  
+                  <div className="mt-2 flex items-center justify-between">
+                    {customTags.length > 0 && (
+                      <div className="text-xs text-neutral-500">
+                        Available tags: {customTags.slice(0, 10).join(', ')}
+                        {customTags.length > 10 && ` and ${customTags.length - 10} more...`}
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const availableTags = customTags
+                          .filter(tag => !formData.tags.includes(tag))
+                          .slice(0, 5);
+                        setFilteredSuggestions(availableTags);
+                        setShowTagSuggestions(!showTagSuggestions);
+                      }}
+                      className="text-xs text-neutral-400 hover:text-neutral-300 transition-colors flex items-center gap-1"
+                    >
+                      <Tag size={10} />
+                      {showTagSuggestions ? 'Hide' : 'Show'} suggestions
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
           
-          <div className="bg-neutral-800 p-6 rounded-lg">
+          <div className="liquid-glass bg-neutral-800 p-6 rounded-lg">
             <h3 className="text-lg font-medium text-white mb-4">Specifications</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -290,7 +416,7 @@ const GalleryItemDetail: React.FC = () => {
                   name="specs.size"
                   value={formData.specs.size}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="e.g., 5 inch"
                 />
               </div>
@@ -305,7 +431,7 @@ const GalleryItemDetail: React.FC = () => {
                   name="specs.weight"
                   value={formData.specs.weight}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="Weight in grams"
                 />
               </div>
@@ -320,7 +446,7 @@ const GalleryItemDetail: React.FC = () => {
                   name="specs.motorKv"
                   value={formData.specs.motorKv}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="Motor KV rating"
                 />
               </div>
@@ -335,7 +461,7 @@ const GalleryItemDetail: React.FC = () => {
                   name="specs.batteryConfig"
                   value={formData.specs.batteryConfig}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="e.g., 6S 1300mAh"
                 />
               </div>
@@ -350,7 +476,7 @@ const GalleryItemDetail: React.FC = () => {
                   name="specs.flightController"
                   value={formData.specs.flightController}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="FC model"
                 />
               </div>
@@ -365,14 +491,14 @@ const GalleryItemDetail: React.FC = () => {
                   name="specs.vtx"
                   value={formData.specs.vtx}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="VTX model"
                 />
               </div>
             </div>
           </div>
           
-          <div className="bg-neutral-800 p-6 rounded-lg">
+          <div className="liquid-glass bg-neutral-800 p-6 rounded-lg">
             <h3 className="text-lg font-medium text-white mb-4">Images</h3>
             
             <div className="space-y-3">
@@ -382,14 +508,14 @@ const GalleryItemDetail: React.FC = () => {
                     type="text"
                     value={url}
                     onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                    className="flex-1 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="liquid-glass flex-1 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                     placeholder="Image URL"
                   />
                   
                   <button
                     type="button"
                     onClick={() => removeImageUrlField(index)}
-                    className="p-2 bg-red-500/80 hover:bg-red-600 text-white rounded-lg transition-colors"
+                    className="liquid-glass p-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-300 rounded-lg transition-all duration-300"
                     disabled={formData.imageUrls.length <= 1}
                   >
                     <Trash2 size={16} />
@@ -400,7 +526,7 @@ const GalleryItemDetail: React.FC = () => {
               <button
                 type="button"
                 onClick={addImageUrlField}
-                className="flex items-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-300 rounded-lg transition-colors"
+                className="liquid-glass flex items-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-300 rounded-lg transition-all duration-300"
               >
                 <Plus size={16} />
                 <span>Add Image URL</span>
@@ -413,14 +539,14 @@ const GalleryItemDetail: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
+                className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-all duration-300"
               >
                 Cancel
               </button>
             )}
             <button
               type="submit"
-              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors"
+              className="liquid-glass px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-all duration-300"
             >
               {id === 'new' ? 'Add to Gallery' : 'Save Changes'}
             </button>
@@ -446,7 +572,7 @@ const GalleryItemDetail: React.FC = () => {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg transition-colors"
+            className="liquid-glass flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg transition-all duration-300"
           >
             <Edit size={16} />
             <span>Edit</span>
@@ -454,7 +580,7 @@ const GalleryItemDetail: React.FC = () => {
           
           <button
             onClick={handleDelete}
-            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            className="liquid-glass flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-300"
           >
             <Trash2 size={16} />
             <span>Delete</span>
@@ -465,7 +591,7 @@ const GalleryItemDetail: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           {/* Main Image */}
-          <div className="bg-neutral-800 rounded-lg overflow-hidden shadow-lg">
+          <div className="liquid-glass bg-neutral-800 rounded-lg overflow-hidden shadow-lg">
             {item.imageUrls && item.imageUrls.length > 0 ? (
               <div className="aspect-w-16 aspect-h-9">
                 <img 
@@ -504,7 +630,7 @@ const GalleryItemDetail: React.FC = () => {
           
           {/* Specifications */}
           {item.specs && Object.keys(item.specs).length > 0 && (
-            <div className="mt-6 bg-neutral-800 rounded-lg p-6">
+            <div className="liquid-glass bg-neutral-800 rounded-lg p-6 mt-6">
               <h3 className="font-medium text-lg text-white mb-4">Specifications</h3>
               
               <div className="grid grid-cols-2 gap-4">
@@ -551,7 +677,7 @@ const GalleryItemDetail: React.FC = () => {
         
         <div className="space-y-6">
           {/* Build Info */}
-          <div className="bg-neutral-800 rounded-lg p-6">
+          <div className="liquid-glass bg-neutral-800 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-white mb-2">{item.title}</h2>
             <p className="text-neutral-300 whitespace-pre-line">{item.description}</p>
             
@@ -559,7 +685,7 @@ const GalleryItemDetail: React.FC = () => {
               {item.tags.map(tag => (
                 <span
                   key={tag}
-                  className="px-2 py-1 bg-neutral-700/50 text-neutral-300 rounded text-sm"
+                  className="liquid-glass px-2 py-1 bg-neutral-700/50 text-neutral-300 rounded text-sm"
                 >
                   {tag}
                 </span>

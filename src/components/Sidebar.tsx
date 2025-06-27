@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Package, Tags, CheckSquare, Settings, 
-  LogOut, Wrench, Camera, Link as LinkIcon, Menu, X, MapPin
+  LogOut, Wrench, Camera, Link as LinkIcon, Menu, X, MapPin, Plane
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -19,6 +19,7 @@ const Sidebar: React.FC = () => {
     { icon: <Tags size={20} />, text: 'Categories', path: '/categories' },
     { icon: <MapPin size={20} />, text: 'Storage Locations', path: '/storage' },
     { icon: <Wrench size={20} />, text: 'Build Notes', path: '/builds' },
+    { icon: <Plane size={20} />, text: 'Flight Log', path: '/flight-log' },
     { icon: <Camera size={20} />, text: 'Gallery', path: '/gallery' },
     { icon: <LinkIcon size={20} />, text: 'Links', path: '/links' },
     { icon: <CheckSquare size={20} />, text: 'Things to Do', path: '/todo' },
@@ -48,7 +49,7 @@ const Sidebar: React.FC = () => {
     <>
       {/* Mobile Menu Button */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-neutral-800 rounded-lg text-neutral-400 hover:text-white transition-colors"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 liquid-glass rounded-lg text-neutral-400 hover:text-white transition-colors"
         onClick={toggleMobileMenu}
       >
         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -63,7 +64,7 @@ const Sidebar: React.FC = () => {
       )}
 
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-40 bg-neutral-900 border-r border-neutral-800 flex flex-col h-full transition-all duration-300 ${
+        className={`fixed lg:static inset-y-0 left-0 z-40 liquid-sidebar flex flex-col h-full transition-all duration-300 ${
           isCollapsed ? 'w-16' : 'w-64'
         } ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
@@ -89,7 +90,7 @@ const Sidebar: React.FC = () => {
             </Link>
             <button
               onClick={toggleSidebar}
-              className="hidden lg:block p-1.5 rounded-lg bg-neutral-800 text-neutral-400 hover:text-white transition-colors"
+              className="hidden lg:block p-1.5 rounded-lg liquid-glass text-neutral-400 hover:text-white transition-colors"
             >
               <Menu size={16} />
             </button>
@@ -105,7 +106,7 @@ const Sidebar: React.FC = () => {
                   className={({ isActive }) => 
                     `flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'} px-3 py-2.5 rounded-lg transition-colors ${
                       isActive 
-                        ? 'bg-primary-900/50 text-primary-400' 
+                        ? 'bg-primary-900/50 text-primary-400 liquid-glass' 
                         : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
                     }`
                   }

@@ -2,12 +2,15 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useInventoryStore } from '../store/inventoryStore';
 import { useTodoStore } from '../store/todoStore';
+import { useSettingsStore } from '../store/settingsStore';
 import { AlertTriangle, Package, CheckCircle, ShoppingCart } from 'lucide-react';
+import { formatCurrency } from '../utils/currency';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { parts, categories } = useInventoryStore();
   const { todos } = useTodoStore();
+  const { settings } = useSettingsStore();
   
   // Calculate statistics
   const totalParts = parts.length;
@@ -16,11 +19,6 @@ const Dashboard: React.FC = () => {
   const lowStockParts = parts.filter(part => part.quantity <= lowStockThreshold);
   const totalCategories = categories.length;
   const pendingTodos = todos.filter(todo => !todo.completed).length;
-  
-  // Format as currency
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-  };
   
   // Calculate total inventory value
   const totalValue = parts.reduce((sum, part) => sum + (part.price * part.quantity), 0);
@@ -31,7 +29,7 @@ const Dashboard: React.FC = () => {
       
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-neutral-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="liquid-card p-6 shadow-lg hover:shadow-xl transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-neutral-400 text-sm">Total Parts</p>
@@ -46,7 +44,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
-        <div className="bg-neutral-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="liquid-card p-6 shadow-lg hover:shadow-xl transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-neutral-400 text-sm">Inventory Value</p>
@@ -61,7 +59,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
-        <div className="bg-neutral-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="liquid-card p-6 shadow-lg hover:shadow-xl transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-neutral-400 text-sm">Low Stock</p>
@@ -76,7 +74,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
-        <div className="bg-neutral-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="liquid-card p-6 shadow-lg hover:shadow-xl transition-shadow">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-neutral-400 text-sm">Tasks</p>
@@ -94,7 +92,7 @@ const Dashboard: React.FC = () => {
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent parts */}
-        <div className="bg-neutral-800 rounded-xl shadow-lg lg:col-span-2">
+        <div className="liquid-card shadow-lg lg:col-span-2">
           <div className="p-4 border-b border-neutral-700 flex justify-between items-center">
             <h3 className="font-medium text-lg text-white">Recent Parts</h3>
             <button 
@@ -119,7 +117,7 @@ const Dashboard: React.FC = () => {
                   .sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime())
                   .slice(0, 5)
                   .map((part) => (
-                    <tr key={part.id} className="border-t border-neutral-700 hover:bg-neutral-700/30 transition-colors">
+                    <tr key={part.id} className="liquid-glass border-t border-neutral-700 hover:bg-neutral-700/30 transition-all duration-300">
                       <td className="py-3">
                         <div 
                           className="flex items-center cursor-pointer" 
@@ -150,7 +148,7 @@ const Dashboard: React.FC = () => {
         </div>
         
         {/* Recent tasks */}
-        <div className="bg-neutral-800 rounded-xl shadow-lg">
+        <div className="liquid-card shadow-lg">
           <div className="p-4 border-b border-neutral-700 flex justify-between items-center">
             <h3 className="font-medium text-lg text-white">Pending Tasks</h3>
             <button 
@@ -168,7 +166,7 @@ const Dashboard: React.FC = () => {
                 .map((todo) => (
                   <li 
                     key={todo.id}
-                    className="p-3 rounded-lg bg-neutral-700/30 hover:bg-neutral-700/50 transition-colors cursor-pointer"
+                    className="p-3 rounded-lg liquid-glass hover:bg-neutral-700/50 transition-all duration-300 cursor-pointer"
                     onClick={() => navigate('/todo')}
                   >
                     <div className="flex items-start">

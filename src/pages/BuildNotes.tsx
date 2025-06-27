@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Wrench, Clock, CheckCircle, Archive, Search } from 'lucide-react';
 import { useBuildStore } from '../store/buildStore';
+import { useSettingsStore } from '../store/settingsStore';
 import { BuildNote } from '../models/types';
 import { useToaster } from '../components/ui/Toaster';
+import { formatCurrency } from '../utils/currency';
 
 const BuildNotes: React.FC = () => {
   const navigate = useNavigate();
-  const { filteredBuilds, filterOptions, setFilterOptions } = useBuildStore();
+  const { builds, filteredBuilds, filterOptions, setFilterOptions } = useBuildStore();
+  const { settings } = useSettingsStore();
   const { addToast } = useToaster();
   
   // Format date
@@ -57,7 +60,7 @@ const BuildNotes: React.FC = () => {
         
         <button
           onClick={() => navigate('/builds/new')}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+          className="liquid-glass flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
         >
           <Plus size={16} />
           <span>New Build</span>
@@ -73,7 +76,7 @@ const BuildNotes: React.FC = () => {
             placeholder="Search builds..."
             value={filterOptions.searchTerm}
             onChange={(e) => setFilterOptions({ searchTerm: e.target.value })}
-            className="w-full pl-10 pr-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="liquid-glass w-full pl-10 pr-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
           />
         </div>
         
@@ -82,10 +85,10 @@ const BuildNotes: React.FC = () => {
             onClick={() => {
               const newStatus = filterOptions.status.includes('planning')
                 ? filterOptions.status.filter(s => s !== 'planning')
-                : [...filterOptions.status, 'planning'];
+                : [...filterOptions.status, 'planning'] as ('planning' | 'in-progress' | 'completed' | 'archived')[];
               setFilterOptions({ status: newStatus });
             }}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 ${
               filterOptions.status.includes('planning')
                 ? 'bg-blue-500/20 text-blue-400'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -99,10 +102,10 @@ const BuildNotes: React.FC = () => {
             onClick={() => {
               const newStatus = filterOptions.status.includes('in-progress')
                 ? filterOptions.status.filter(s => s !== 'in-progress')
-                : [...filterOptions.status, 'in-progress'];
+                : [...filterOptions.status, 'in-progress'] as ('planning' | 'in-progress' | 'completed' | 'archived')[];
               setFilterOptions({ status: newStatus });
             }}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 ${
               filterOptions.status.includes('in-progress')
                 ? 'bg-yellow-500/20 text-yellow-400'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -116,10 +119,10 @@ const BuildNotes: React.FC = () => {
             onClick={() => {
               const newStatus = filterOptions.status.includes('completed')
                 ? filterOptions.status.filter(s => s !== 'completed')
-                : [...filterOptions.status, 'completed'];
+                : [...filterOptions.status, 'completed'] as ('planning' | 'in-progress' | 'completed' | 'archived')[];
               setFilterOptions({ status: newStatus });
             }}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 ${
               filterOptions.status.includes('completed')
                 ? 'bg-green-500/20 text-green-400'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -133,10 +136,10 @@ const BuildNotes: React.FC = () => {
             onClick={() => {
               const newStatus = filterOptions.status.includes('archived')
                 ? filterOptions.status.filter(s => s !== 'archived')
-                : [...filterOptions.status, 'archived'];
+                : [...filterOptions.status, 'archived'] as ('planning' | 'in-progress' | 'completed' | 'archived')[];
               setFilterOptions({ status: newStatus });
             }}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 ${
               filterOptions.status.includes('archived')
                 ? 'bg-neutral-500/20 text-neutral-400'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -153,7 +156,7 @@ const BuildNotes: React.FC = () => {
         {filteredBuilds.map((build) => (
           <div
             key={build.id}
-            className="bg-neutral-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer group"
+            className="liquid-glass bg-neutral-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             onClick={() => navigate(`/builds/${build.id}`)}
           >
             <div className="aspect-w-16 aspect-h-9 bg-neutral-900">
@@ -175,7 +178,7 @@ const BuildNotes: React.FC = () => {
                 <h3 className="text-lg font-medium text-white group-hover:text-primary-400 transition-colors">
                   {build.title}
                 </h3>
-                <span className={`px-2 py-1 text-xs rounded-full flex items-center gap-1.5 ${getStatusBadgeClass(build.status)}`}>
+                <span className={`liquid-glass px-2 py-1 text-xs rounded-full flex items-center gap-1.5 ${getStatusBadgeClass(build.status)}`}>
                   {getStatusIcon(build.status)}
                   <span>{build.status.replace('-', ' ')}</span>
                 </span>
@@ -190,7 +193,7 @@ const BuildNotes: React.FC = () => {
                   {formatDate(build.dateCreated)}
                 </span>
                 <span className="text-primary-400 font-medium">
-                  ${build.totalCost.toFixed(2)}
+                  {formatCurrency(build.totalCost)}
                 </span>
               </div>
               

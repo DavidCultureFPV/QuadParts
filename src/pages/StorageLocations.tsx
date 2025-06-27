@@ -171,7 +171,7 @@ const StorageLocations: React.FC = () => {
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setShowFilterPanel(!showFilterPanel)} 
-            className="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors text-neutral-200"
+            className="liquid-glass flex items-center gap-2 px-4 py-2 hover:bg-neutral-700 rounded-lg transition-all duration-300 text-neutral-200"
           >
             <SlidersHorizontal size={16} />
             <span>Filter</span>
@@ -182,7 +182,7 @@ const StorageLocations: React.FC = () => {
               setEditingLocation(null);
               setShowNewLocationForm(!showNewLocationForm);
             }}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+            className="liquid-glass flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
           >
             <Plus size={16} />
             <span>New Location</span>
@@ -192,12 +192,12 @@ const StorageLocations: React.FC = () => {
       
       {/* Filter panel */}
       {showFilterPanel && (
-        <div className="bg-neutral-800 p-4 rounded-lg shadow-lg animate-slide-down">
+        <div className="liquid-glass bg-neutral-800 p-4 rounded-lg shadow-lg animate-slide-down">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-medium text-neutral-200">Filter & Sort</h3>
             <button 
               onClick={() => setShowFilterPanel(false)}
-              className="text-neutral-400 hover:text-neutral-300"
+              className="liquid-glass p-1.5 text-neutral-400 hover:text-neutral-300 rounded transition-all duration-300"
             >
               <SlidersHorizontal size={18} />
             </button>
@@ -213,7 +213,7 @@ const StorageLocations: React.FC = () => {
                   placeholder="Search locations..."
                   value={filterOptions.searchTerm}
                   onChange={(e) => setFilterOptions({ searchTerm: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full pl-10 pr-4 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 />
               </div>
             </div>
@@ -257,7 +257,7 @@ const StorageLocations: React.FC = () => {
                     sortDirection: sortDirection as 'asc' | 'desc'
                   });
                 }}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
               >
                 <option value="name-asc">Name (A-Z)</option>
                 <option value="name-desc">Name (Z-A)</option>
@@ -275,7 +275,7 @@ const StorageLocations: React.FC = () => {
       
       {/* New Location Form */}
       {showNewLocationForm && (
-        <div className="bg-neutral-800 p-6 rounded-lg shadow-lg animate-fade-in">
+        <div className="liquid-glass bg-neutral-800 p-6 rounded-lg shadow-lg animate-fade-in">
           <h3 className="text-lg font-medium text-white mb-4">Add New Storage Location</h3>
           
           <form onSubmit={handleLocationSubmit} className="space-y-4">
@@ -289,7 +289,7 @@ const StorageLocations: React.FC = () => {
                   id="name"
                   value={newLocation.name}
                   onChange={(e) => setNewLocation({ ...newLocation, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="e.g., Shelf A1, Drawer B2"
                   required
                   maxLength={50}
@@ -307,7 +307,7 @@ const StorageLocations: React.FC = () => {
                     ...newLocation, 
                     type: e.target.value as StorageLocation['type']
                   })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 >
                   <option value="shelf">Shelf</option>
                   <option value="drawer">Drawer</option>
@@ -327,7 +327,7 @@ const StorageLocations: React.FC = () => {
                 id="description"
                 value={newLocation.description}
                 onChange={(e) => setNewLocation({ ...newLocation, description: e.target.value })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 placeholder="Description of what's stored here (optional)"
                 rows={2}
                 maxLength={200}
@@ -347,7 +347,7 @@ const StorageLocations: React.FC = () => {
                   ...newLocation, 
                   capacity: parseInt(e.target.value) || 0
                 })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 placeholder="Maximum number of items"
               />
               <p className="text-xs text-neutral-500 mt-1">
@@ -362,14 +362,14 @@ const StorageLocations: React.FC = () => {
                   setShowNewLocationForm(false);
                   setNewLocation({ name: '', description: '', type: 'shelf', capacity: 0 });
                 }}
-                className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
+                className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-all duration-300"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={!newLocation.name.trim()}
-                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="liquid-glass px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Create Location
               </button>
@@ -381,7 +381,7 @@ const StorageLocations: React.FC = () => {
       {/* Edit Location Modal */}
       {editingLocation && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-neutral-800 p-6 rounded-lg shadow-xl w-full max-w-md animate-fade-in">
+          <div className="liquid-glass bg-neutral-800 p-6 rounded-lg shadow-xl w-full max-w-md animate-fade-in">
             <h3 className="text-lg font-medium text-white mb-4">Edit Storage Location</h3>
             
             <form onSubmit={handleEditSubmit} className="space-y-4">
@@ -394,7 +394,7 @@ const StorageLocations: React.FC = () => {
                   id="edit-name"
                   value={editingLocation.name}
                   onChange={(e) => setEditingLocation({ ...editingLocation, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   required
                   maxLength={50}
                 />
@@ -411,7 +411,7 @@ const StorageLocations: React.FC = () => {
                     ...editingLocation, 
                     type: e.target.value as StorageLocation['type']
                   })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 >
                   <option value="shelf">Shelf</option>
                   <option value="drawer">Drawer</option>
@@ -433,7 +433,7 @@ const StorageLocations: React.FC = () => {
                     ...editingLocation, 
                     description: e.target.value 
                   })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   rows={2}
                   maxLength={200}
                 />
@@ -452,7 +452,7 @@ const StorageLocations: React.FC = () => {
                     ...editingLocation, 
                     capacity: parseInt(e.target.value) || undefined
                   })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 />
               </div>
               
@@ -460,13 +460,13 @@ const StorageLocations: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setEditingLocation(null)}
-                  className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
+                  className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-all duration-300"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors"
+                  className="liquid-glass px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-all duration-300"
                 >
                   Update Location
                 </button>
@@ -486,7 +486,7 @@ const StorageLocations: React.FC = () => {
           </p>
           <button
             onClick={() => setShowNewLocationForm(true)}
-            className="mt-4 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+            className="mt-4 px-4 py-2 liquid-glass bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
           >
             Add Your First Location
           </button>
@@ -496,7 +496,7 @@ const StorageLocations: React.FC = () => {
           {filteredLocations.map((location) => (
             <div
               key={location.id}
-              className="bg-neutral-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow group"
+              className="liquid-glass bg-neutral-800 rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300 group"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -512,13 +512,13 @@ const StorageLocations: React.FC = () => {
                 <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => setEditingLocation(location)}
-                    className="p-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-white transition-colors"
+                    className="liquid-glass p-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-white transition-all duration-300"
                   >
                     <Edit size={16} />
                   </button>
                   <button
                     onClick={() => handleDeleteLocation(location)}
-                    className="p-1.5 bg-red-500/80 hover:bg-red-600 rounded text-white transition-colors"
+                    className="liquid-glass p-1.5 bg-red-500/80 hover:bg-red-600 rounded text-white transition-all duration-300"
                   >
                     <Trash2 size={16} />
                   </button>

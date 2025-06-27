@@ -16,6 +16,8 @@ export interface Part {
   lastModified?: string;
   notes?: string;
   inUse: number;
+  status: 'in-stock' | 'in-use';
+  condition: 'new' | 'good' | 'fair' | 'poor' | 'broken' | 'needs-repair';
 }
 
 export interface Category {
@@ -65,6 +67,8 @@ export interface FilterOptions {
   inStock: boolean;
   sortBy: 'name' | 'category' | 'quantity' | 'dateAdded';
   sortDirection: 'asc' | 'desc';
+  status: ('in-stock' | 'in-use')[];
+  conditions: ('new' | 'good' | 'fair' | 'poor' | 'broken' | 'needs-repair')[];
 }
 
 export interface BuildNote {

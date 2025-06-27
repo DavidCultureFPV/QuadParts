@@ -135,7 +135,7 @@ const Links: React.FC = () => {
             setEditingLink(null);
             setShowAddForm(!showAddForm);
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+          className="liquid-glass flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
         >
           <Plus size={16} />
           <span>Add Link</span>
@@ -144,7 +144,7 @@ const Links: React.FC = () => {
       
       {/* Add/Edit Form */}
       {(showAddForm || editingLink) && (
-        <div className="bg-neutral-800 p-6 rounded-lg animate-fade-in">
+        <div className="liquid-glass bg-neutral-800 p-6 rounded-lg animate-fade-in">
           <h3 className="text-lg font-medium text-white mb-4">
             {editingLink ? 'Edit Link' : 'Add New Link'}
           </h3>
@@ -160,7 +160,7 @@ const Links: React.FC = () => {
                   id="title"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="Link title"
                   required
                 />
@@ -175,7 +175,7 @@ const Links: React.FC = () => {
                   id="url"
                   value={formData.url}
                   onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="https://example.com"
                   required
                 />
@@ -190,7 +190,7 @@ const Links: React.FC = () => {
                 id="description"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 placeholder="Brief description"
                 rows={2}
               />
@@ -207,7 +207,7 @@ const Links: React.FC = () => {
                   ...formData, 
                   category: e.target.value as Link['category']
                 })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
               >
                 <option value="website">Website</option>
                 <option value="youtube">YouTube</option>
@@ -225,13 +225,13 @@ const Links: React.FC = () => {
                 {formData.tags.map(tag => (
                   <span
                     key={tag}
-                    className="px-2 py-1 bg-neutral-700 text-neutral-300 rounded-lg text-sm flex items-center gap-2"
+                    className="liquid-glass px-2 py-1 bg-neutral-700 text-neutral-300 rounded-lg text-sm flex items-center gap-2"
                   >
                     {tag}
                     <button
                       type="button"
                       onClick={() => handleRemoveTag(tag)}
-                      className="text-neutral-400 hover:text-red-400"
+                      className="liquid-glass text-neutral-400 hover:text-red-400 transition-all duration-300"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -243,12 +243,12 @@ const Links: React.FC = () => {
                   type="text"
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
-                  className="flex-1 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass flex-1 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="Add a tag"
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors"
+                  className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-all duration-300"
                 >
                   Add
                 </button>
@@ -269,13 +269,13 @@ const Links: React.FC = () => {
                     tags: []
                   });
                 }}
-                className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
+                className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-all duration-300"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors"
+                className="liquid-glass px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-all duration-300"
               >
                 {editingLink ? 'Save Changes' : 'Add Link'}
               </button>
@@ -293,7 +293,7 @@ const Links: React.FC = () => {
             placeholder="Search links..."
             value={filterOptions.searchTerm}
             onChange={(e) => setFilterOptions({ searchTerm: e.target.value })}
-            className="w-full pl-10 pr-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="liquid-glass w-full pl-10 pr-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
           />
         </div>
         
@@ -302,10 +302,10 @@ const Links: React.FC = () => {
             onClick={() => {
               const newCategories = filterOptions.categories.includes('website')
                 ? filterOptions.categories.filter(c => c !== 'website')
-                : [...filterOptions.categories, 'website'];
+                : [...filterOptions.categories, 'website'] as ('website' | 'youtube' | 'blog' | 'store' | 'other')[];
               setFilterOptions({ categories: newCategories });
             }}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 ${
               filterOptions.categories.includes('website')
                 ? 'bg-blue-500/20 text-blue-400'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -319,10 +319,10 @@ const Links: React.FC = () => {
             onClick={() => {
               const newCategories = filterOptions.categories.includes('youtube')
                 ? filterOptions.categories.filter(c => c !== 'youtube')
-                : [...filterOptions.categories, 'youtube'];
+                : [...filterOptions.categories, 'youtube'] as ('website' | 'youtube' | 'blog' | 'store' | 'other')[];
               setFilterOptions({ categories: newCategories });
             }}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 ${
               filterOptions.categories.includes('youtube')
                 ? 'bg-red-500/20 text-red-400'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -336,10 +336,10 @@ const Links: React.FC = () => {
             onClick={() => {
               const newCategories = filterOptions.categories.includes('blog')
                 ? filterOptions.categories.filter(c => c !== 'blog')
-                : [...filterOptions.categories, 'blog'];
+                : [...filterOptions.categories, 'blog'] as ('website' | 'youtube' | 'blog' | 'store' | 'other')[];
               setFilterOptions({ categories: newCategories });
             }}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 ${
               filterOptions.categories.includes('blog')
                 ? 'bg-green-500/20 text-green-400'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -353,10 +353,10 @@ const Links: React.FC = () => {
             onClick={() => {
               const newCategories = filterOptions.categories.includes('store')
                 ? filterOptions.categories.filter(c => c !== 'store')
-                : [...filterOptions.categories, 'store'];
+                : [...filterOptions.categories, 'store'] as ('website' | 'youtube' | 'blog' | 'store' | 'other')[];
               setFilterOptions({ categories: newCategories });
             }}
-            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 ${
               filterOptions.categories.includes('store')
                 ? 'bg-yellow-500/20 text-yellow-400'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -371,13 +371,12 @@ const Links: React.FC = () => {
           onClick={() => setFilterOptions({ 
             favoritesOnly: !filterOptions.favoritesOnly 
           })}
-          className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
+          className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 ${
             filterOptions.favoritesOnly
               ? 'bg-primary-500/20 text-primary-400'
               : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
           }`}
         >
-          
           <Star size={16} />
           <span>Favorites</span>
         </button>
@@ -395,7 +394,7 @@ const Links: React.FC = () => {
                   : [...filterOptions.tags, tag];
                 setFilterOptions({ tags: newTags });
               }}
-              className={`px-2 py-1 rounded-lg transition-colors flex items-center gap-1.5 text-sm ${
+              className={`liquid-glass px-2 py-1 rounded-lg transition-all duration-300 flex items-center gap-1.5 text-sm ${
                 filterOptions.tags.includes(tag)
                   ? 'bg-primary-500/20 text-primary-400'
                   : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -418,7 +417,7 @@ const Links: React.FC = () => {
           </p>
           <button
             onClick={() => setShowAddForm(true)}
-            className="mt-4 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+            className="mt-4 px-4 py-2 liquid-glass bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
           >
             Add Your First Link
           </button>
@@ -428,14 +427,14 @@ const Links: React.FC = () => {
           {filteredLinks.map((link) => (
             <div
               key={link.id}
-              className="bg-neutral-800 rounded-lg p-4 hover:bg-neutral-700/80 transition-colors group"
+              className="liquid-glass bg-neutral-800 rounded-lg p-4 hover:bg-neutral-700/80 transition-all duration-300 group"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <button
                       onClick={() => toggleFavorite(link.id)}
-                      className={`text-neutral-400 hover:text-yellow-400 transition-colors ${
+                      className={`liquid-glass text-neutral-400 hover:text-yellow-400 transition-all duration-300 ${
                         link.isFavorite ? 'text-yellow-400' : ''
                       }`}
                     >
@@ -443,7 +442,7 @@ const Links: React.FC = () => {
                     </button>
                     
                     <h3 className="text-lg font-medium text-white flex items-center gap-2">
-                      <span className={`p-1 rounded ${
+                      <span className={`liquid-glass p-1 rounded ${
                         link.category === 'youtube'
                           ? 'bg-red-500/20 text-red-400'
                           : link.category === 'blog'
@@ -465,7 +464,7 @@ const Links: React.FC = () => {
                   <div className="flex flex-wrap items-center gap-4">
                     <button
                       onClick={() => handleLinkClick(link.id, link.url)}
-                      className="text-primary-400 hover:text-primary-300 text-sm flex items-center gap-1"
+                      className="liquid-glass text-primary-400 hover:text-primary-300 text-sm flex items-center gap-1 transition-all duration-300"
                     >
                       <ExternalLink size={14} />
                       <span>{link.url}</span>
@@ -475,7 +474,7 @@ const Links: React.FC = () => {
                       {link.tags.map(tag => (
                         <span
                           key={tag}
-                          className="px-2 py-0.5 bg-neutral-700/50 text-neutral-300 rounded text-xs flex items-center gap-1"
+                          className="liquid-glass px-2 py-0.5 bg-neutral-700/50 text-neutral-300 rounded text-xs flex items-center gap-1"
                         >
                           <Tag size={12} />
                           {tag}
@@ -508,13 +507,13 @@ const Links: React.FC = () => {
                       setEditingLink(link);
                       setShowAddForm(false);
                     }}
-                    className="p-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-white transition-colors"
+                    className="liquid-glass p-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-white transition-all duration-300"
                   >
                     <Edit size={16} />
                   </button>
                   <button
                     onClick={() => handleDelete(link.id, link.title)}
-                    className="p-1.5 bg-red-500/80 hover:bg-red-600 rounded text-white transition-colors"
+                    className="liquid-glass p-1.5 bg-red-500/80 hover:bg-red-600 rounded text-white transition-all duration-300"
                   >
                     <Trash2 size={16} />
                   </button>

@@ -2,20 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Plus, Trash2, Edit, Image, Save,
-  AlertTriangle, Trophy, Wrench, MessageSquare
+  AlertTriangle, Trophy, Wrench, MessageSquare, CheckCircle
 } from 'lucide-react';
 import { useBuildStore } from '../store/buildStore';
+import { useSettingsStore } from '../store/settingsStore';
 import { BuildNote, BuildNoteEntry } from '../models/types';
 import { useToaster } from '../components/ui/Toaster';
+import { formatCurrency } from '../utils/currency';
 
 const BuildNoteDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { getBuild, addBuild, updateBuild, addBuildNote, deleteBuildNote } = useBuildStore();
+  const { settings } = useSettingsStore();
   const { addToast } = useToaster();
   
   const [build, setBuild] = useState<BuildNote | null>(
-    id && id !== 'new' ? getBuild(id) : null
+    id && id !== 'new' ? getBuild(id) || null : null
   );
   
   const [isEditing, setIsEditing] = useState(id === 'new');
@@ -146,6 +149,7 @@ const BuildNoteDetail: React.FC = () => {
       description: formData.description,
       status: formData.status,
       imageUrls: formData.imageUrls.filter(url => url.trim()),
+      partsUsed: [],
       specs: {
         weight: formData.specs.weight ? parseInt(formData.specs.weight) : undefined,
         size: formData.specs.size || undefined,
@@ -158,7 +162,7 @@ const BuildNoteDetail: React.FC = () => {
     
     if (id && id !== 'new') {
       updateBuild(id, buildData);
-      setBuild(getBuild(id));
+      setBuild(getBuild(id) || null);
       setIsEditing(false);
       addToast('success', 'Build updated successfully');
     } else {
@@ -191,7 +195,7 @@ const BuildNoteDetail: React.FC = () => {
       imageUrls: ['']
     });
     setShowNewNoteForm(false);
-    setBuild(getBuild(id));
+    setBuild(getBuild(id) || null);
     addToast('success', 'Note added successfully');
   };
   
@@ -200,7 +204,7 @@ const BuildNoteDetail: React.FC = () => {
     if (!id || id === 'new') return;
     
     deleteBuildNote(id, noteId);
-    setBuild(getBuild(id));
+    setBuild(getBuild(id) || null);
     addToast('success', 'Note deleted successfully');
   };
   
@@ -247,7 +251,7 @@ const BuildNoteDetail: React.FC = () => {
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-neutral-800 p-6 rounded-lg">
+          <div className="liquid-glass bg-neutral-800 p-6 rounded-lg">
             <h3 className="text-lg font-medium text-white mb-4">Basic Information</h3>
             
             <div className="space-y-4">
@@ -261,7 +265,7 @@ const BuildNoteDetail: React.FC = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="Build name"
                   required
                 />
@@ -276,7 +280,7 @@ const BuildNoteDetail: React.FC = () => {
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="Build description"
                   rows={3}
                 />
@@ -291,7 +295,7 @@ const BuildNoteDetail: React.FC = () => {
                   name="status"
                   value={formData.status}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 >
                   <option value="planning">Planning</option>
                   <option value="in-progress">In Progress</option>
@@ -302,7 +306,7 @@ const BuildNoteDetail: React.FC = () => {
             </div>
           </div>
           
-          <div className="bg-neutral-800 p-6 rounded-lg">
+          <div className="liquid-glass bg-neutral-800 p-6 rounded-lg">
             <h3 className="text-lg font-medium text-white mb-4">Specifications</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -316,7 +320,7 @@ const BuildNoteDetail: React.FC = () => {
                   name="specs.size"
                   value={formData.specs.size}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="e.g., 5 inch"
                 />
               </div>
@@ -331,7 +335,7 @@ const BuildNoteDetail: React.FC = () => {
                   name="specs.weight"
                   value={formData.specs.weight}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="Weight in grams"
                 />
               </div>
@@ -346,7 +350,7 @@ const BuildNoteDetail: React.FC = () => {
                   name="specs.motorKv"
                   value={formData.specs.motorKv}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="Motor KV rating"
                 />
               </div>
@@ -361,7 +365,7 @@ const BuildNoteDetail: React.FC = () => {
                   name="specs.batteryConfig"
                   value={formData.specs.batteryConfig}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="e.g., 6S 1300mAh"
                 />
               </div>
@@ -376,7 +380,7 @@ const BuildNoteDetail: React.FC = () => {
                   name="specs.flightController"
                   value={formData.specs.flightController}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="FC model"
                 />
               </div>
@@ -391,14 +395,14 @@ const BuildNoteDetail: React.FC = () => {
                   name="specs.vtx"
                   value={formData.specs.vtx}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="VTX model"
                 />
               </div>
             </div>
           </div>
           
-          <div className="bg-neutral-800 p-6 rounded-lg">
+          <div className="liquid-glass bg-neutral-800 p-6 rounded-lg">
             <h3 className="text-lg font-medium text-white mb-4">Images</h3>
             
             <div className="space-y-3">
@@ -408,14 +412,14 @@ const BuildNoteDetail: React.FC = () => {
                     type="text"
                     value={url}
                     onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                    className="flex-1 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="liquid-glass flex-1 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                     placeholder="Image URL"
                   />
                   
                   <button
                     type="button"
                     onClick={() => removeImageUrlField(index)}
-                    className="p-2 bg-red-500/80 hover:bg-red-600 text-white rounded-lg transition-colors"
+                    className="liquid-glass p-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-300 rounded-lg transition-all duration-300"
                     disabled={formData.imageUrls.length <= 1}
                   >
                     <Trash2 size={16} />
@@ -426,7 +430,7 @@ const BuildNoteDetail: React.FC = () => {
               <button
                 type="button"
                 onClick={addImageUrlField}
-                className="flex items-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-300 rounded-lg transition-colors"
+                className="liquid-glass flex items-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-300 rounded-lg transition-all duration-300"
               >
                 <Plus size={16} />
                 <span>Add Image URL</span>
@@ -439,14 +443,14 @@ const BuildNoteDetail: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
+                className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-all duration-300"
               >
                 Cancel
               </button>
             )}
             <button
               type="submit"
-              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors"
+              className="liquid-glass px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-all duration-300"
             >
               {id === 'new' ? 'Create Build' : 'Save Changes'}
             </button>
@@ -471,7 +475,7 @@ const BuildNoteDetail: React.FC = () => {
         
         <button
           onClick={() => setIsEditing(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg transition-colors"
+          className="liquid-glass flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-lg transition-all duration-300"
         >
           <Edit size={16} />
           <span>Edit Build</span>
@@ -481,7 +485,7 @@ const BuildNoteDetail: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           {/* Build Images */}
-          <div className="bg-neutral-800 rounded-lg overflow-hidden shadow-lg">
+          <div className="liquid-glass bg-neutral-800 rounded-lg overflow-hidden shadow-lg">
             {build.imageUrls && build.imageUrls.length > 0 ? (
               <div className="aspect-w-16 aspect-h-9">
                 <img 
@@ -514,7 +518,7 @@ const BuildNoteDetail: React.FC = () => {
           
           {/* Specifications */}
           {build.specs && Object.keys(build.specs).length > 0 && (
-            <div className="mt-6 bg-neutral-800 rounded-lg p-6">
+            <div className="liquid-glass bg-neutral-800 rounded-lg p-6 mt-4">
               <h3 className="font-medium text-lg text-white mb-4">Specifications</h3>
               
               <div className="grid grid-cols-2 gap-4">
@@ -561,7 +565,7 @@ const BuildNoteDetail: React.FC = () => {
         
         <div className="space-y-6">
           {/* Build Info */}
-          <div className="bg-neutral-800 rounded-lg p-6">
+          <div className="liquid-glass bg-neutral-800 rounded-lg p-6">
             <h2 className="text-2xl font-bold text-white mb-2">{build.title}</h2>
             <p className="text-neutral-300">{build.description}</p>
             
@@ -573,19 +577,19 @@ const BuildNoteDetail: React.FC = () => {
               
               <div className="text-sm text-right">
                 <p className="text-neutral-400">Total Cost</p>
-                <p className="text-white">${build.totalCost.toFixed(2)}</p>
+                <p className="text-white">{formatCurrency(build.totalCost)}</p>
               </div>
             </div>
           </div>
           
           {/* Build Notes */}
-          <div className="bg-neutral-800 rounded-lg p-6">
+          <div className="liquid-glass bg-neutral-800 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-medium text-white">Build Notes</h3>
               
               <button
                 onClick={() => setShowNewNoteForm(!showNewNoteForm)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors text-sm"
+                className="liquid-glass flex items-center gap-2 px-3 py-1.5 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-all duration-300 text-sm"
               >
                 <Plus size={16} />
                 <span>Add Note</span>
@@ -607,7 +611,7 @@ const BuildNoteDetail: React.FC = () => {
                         ...newNote, 
                         type: e.target.value as BuildNoteEntry['type']
                       })}
-                      className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                     >
                       <option value="note">Note</option>
                       <option value="issue">Issue</option>
@@ -624,9 +628,9 @@ const BuildNoteDetail: React.FC = () => {
                       id="note-content"
                       value={newNote.content}
                       onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
-                      className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                       rows={3}
-                      placeholder="Enter your note..."
+                      placeholder="Add your note here..."
                       required
                     />
                   </div>
@@ -638,14 +642,14 @@ const BuildNoteDetail: React.FC = () => {
                           type="text"
                           value={url}
                           onChange={(e) => handleNoteImageUrlChange(index, e.target.value)}
-                          className="flex-1 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                          className="liquid-glass flex-1 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                           placeholder="Image URL"
                         />
                         
                         <button
                           type="button"
                           onClick={() => removeNoteImageUrlField(index)}
-                          className="p-2 bg-red-500/80 hover:bg-red-600 text-white rounded-lg transition-colors"
+                          className="liquid-glass p-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-300 rounded-lg transition-all duration-300"
                           disabled={newNote.imageUrls.length <= 1}
                         >
                           <Trash2 size={16} />
@@ -656,7 +660,7 @@ const BuildNoteDetail: React.FC = () => {
                     <button
                       type="button"
                       onClick={addNoteImageUrlField}
-                      className="flex items-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-300 rounded-lg transition-colors"
+                      className="liquid-glass flex items-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-300 rounded-lg transition-all duration-300"
                     >
                       <Plus size={16} />
                       <span>Add Image URL</span>
@@ -667,13 +671,13 @@ const BuildNoteDetail: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowNewNoteForm(false)}
-                      className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
+                      className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-all duration-300"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors"
+                      className="liquid-glass px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-all duration-300"
                     >
                       Add Note
                     </button>
@@ -690,10 +694,10 @@ const BuildNoteDetail: React.FC = () => {
                 </p>
               ) : (
                 build.notes.map((note) => (
-                  <div key={note.id} className="bg-neutral-700/50 rounded-lg p-4">
+                  <div key={note.id} className="liquid-glass bg-neutral-700/50 rounded-lg p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-2">
-                        <div className={`p-1.5 rounded ${
+                        <div className={`liquid-glass p-1.5 rounded ${
                           note.type === 'issue' 
                             ? 'bg-red-500/20 text-red-400'
                             : note.type === 'modification'
@@ -714,7 +718,7 @@ const BuildNoteDetail: React.FC = () => {
                       
                       <button
                         onClick={() => handleDeleteNote(note.id)}
-                        className="p-1.5 text-neutral-400 hover:text-red-400 transition-colors"
+                        className="liquid-glass p-1.5 text-neutral-400 hover:text-red-400 transition-all duration-300"
                       >
                         <Trash2 size={16} />
                       </button>

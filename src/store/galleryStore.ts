@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { GalleryItem } from '../models/types';
 
+const STORAGE_KEY = 'quadparts_gallery_data';
+
 interface GalleryState {
   items: GalleryItem[];
   filteredItems: GalleryItem[];
@@ -68,10 +70,60 @@ const sampleItems: GalleryItem[] = [
 // Initial custom tags
 const initialCustomTags = ['freestyle', '5inch', '3inch', 'micro', 'analog', 'digital'];
 
+// Load saved data from localStorage
+const loadSavedData = () => {
+  try {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      
+      // Handle different data structures
+      let items, customTags;
+      if (Array.isArray(parsed)) {
+        // If the data is directly an array
+        items = parsed;
+        customTags = initialCustomTags;
+      } else if (parsed && typeof parsed === 'object') {
+        // If the data is wrapped in an object
+        if (Array.isArray(parsed.items)) {
+          items = parsed.items;
+          customTags = parsed.customTags || initialCustomTags;
+        } else if (Array.isArray(parsed.galleryItems)) {
+          items = parsed.galleryItems;
+          customTags = parsed.customTags || initialCustomTags;
+        } else if (Array.isArray(parsed.data)) {
+          items = parsed.data;
+          customTags = parsed.customTags || initialCustomTags;
+        } else {
+          console.warn('Unexpected gallery data structure:', parsed);
+          return { items: sampleItems, customTags: initialCustomTags };
+        }
+      } else {
+        console.warn('Unexpected gallery data structure:', parsed);
+        return { items: sampleItems, customTags: initialCustomTags };
+      }
+      
+      // Ensure dates are properly parsed
+      const parsedItems = items.map((item: any) => ({
+        ...item,
+        dateAdded: new Date(item.dateAdded).toISOString()
+      }));
+      
+      console.log(`Loaded ${parsedItems.length} gallery items from localStorage`);
+      return { items: parsedItems, customTags };
+    }
+  } catch (error) {
+    console.error('Error loading gallery data from localStorage:', error);
+  }
+  return { items: sampleItems, customTags: initialCustomTags };
+};
+
+const { items: savedItems, customTags: savedCustomTags } = loadSavedData();
+
 export const useGalleryStore = create<GalleryState>((set, get) => ({
-  items: sampleItems,
-  filteredItems: sampleItems,
-  customTags: initialCustomTags,
+  items: savedItems,
+  filteredItems: savedItems,
+  customTags: savedCustomTags,
   filterOptions: {
     searchTerm: '',
     tags: []
@@ -97,6 +149,10 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       items: [...state.items, newItem]
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { items, customTags } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ items, customTags }));
   },
   
   updateItem: (id, itemData) => {
@@ -118,6 +174,10 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       )
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { items, customTags } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ items, customTags }));
   },
   
   deleteItem: (id) => {
@@ -130,6 +190,10 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       customTags: state.customTags.filter(tag => usedTags.has(tag))
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { items, customTags } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ items, customTags }));
   },
   
   getItem: (id) => {
@@ -142,6 +206,10 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       set((state) => ({
         customTags: [...state.customTags, normalizedTag]
       }));
+      
+      // Save to localStorage
+      const { items, customTags } = get();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ items, customTags }));
     }
   },
   
@@ -157,6 +225,10 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         }
       }));
       get().applyFilters();
+      
+      // Save to localStorage
+      const { items, customTags } = get();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ items, customTags }));
     }
   },
   
@@ -174,18 +246,24 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     
     // Filter by search term
     if (filterOptions.searchTerm) {
-      const term = filterOptions.searchTerm.toLowerCase();
+      const term = filterOptions.searchTerm.toLowerCase().trim();
       filtered = filtered.filter((item) =>
         item.title.toLowerCase().includes(term) ||
         item.description.toLowerCase().includes(term) ||
-        item.tags.some(tag => tag.toLowerCase().includes(term))
+        item.tags.some(tag => tag.toLowerCase().includes(term)) ||
+        (item.specs?.size && item.specs.size.toLowerCase().includes(term)) ||
+        (item.specs?.flightController && item.specs.flightController.toLowerCase().includes(term))
       );
     }
     
-    // Filter by tags
+    // Filter by tags (show items that have ANY of the selected tags)
     if (filterOptions.tags.length > 0) {
       filtered = filtered.filter((item) =>
-        filterOptions.tags.some(tag => item.tags.includes(tag))
+        filterOptions.tags.some(selectedTag => 
+          item.tags.some(itemTag => 
+            itemTag.toLowerCase() === selectedTag.toLowerCase()
+          )
+        )
       );
     }
     

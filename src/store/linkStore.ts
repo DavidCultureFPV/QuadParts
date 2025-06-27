@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { Link } from '../models/types';
 
+const STORAGE_KEY = 'quadparts_links_data';
+
 interface LinkState {
   links: Link[];
   filteredLinks: Link[];
@@ -54,10 +56,51 @@ const sampleLinks: Link[] = [
 // Initial custom tags
 const initialCustomTags = ['tutorial', 'review', 'education', 'guide', 'build'];
 
+// Load saved data from localStorage
+const loadSavedData = () => {
+  try {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      
+      // Handle different data structures
+      let links, customTags;
+      if (Array.isArray(parsed)) {
+        // If the data is directly an array
+        links = parsed;
+        customTags = initialCustomTags;
+      } else if (parsed && typeof parsed === 'object') {
+        // If the data is wrapped in an object
+        if (Array.isArray(parsed.links)) {
+          links = parsed.links;
+          customTags = parsed.customTags || initialCustomTags;
+        } else if (Array.isArray(parsed.data)) {
+          links = parsed.data;
+          customTags = parsed.customTags || initialCustomTags;
+        } else {
+          console.warn('Unexpected links data structure:', parsed);
+          return { links: sampleLinks, customTags: initialCustomTags };
+        }
+      } else {
+        console.warn('Unexpected links data structure:', parsed);
+        return { links: sampleLinks, customTags: initialCustomTags };
+      }
+      
+      console.log(`Loaded ${links.length} links from localStorage`);
+      return { links, customTags };
+    }
+  } catch (error) {
+    console.error('Error loading links data from localStorage:', error);
+  }
+  return { links: sampleLinks, customTags: initialCustomTags };
+};
+
+const { links: savedLinks, customTags: savedCustomTags } = loadSavedData();
+
 export const useLinkStore = create<LinkState>((set, get) => ({
-  links: sampleLinks,
-  filteredLinks: sampleLinks,
-  customTags: initialCustomTags,
+  links: savedLinks,
+  filteredLinks: savedLinks,
+  customTags: savedCustomTags,
   filterOptions: {
     searchTerm: '',
     categories: ['website', 'youtube', 'blog', 'store', 'other'],
@@ -86,6 +129,10 @@ export const useLinkStore = create<LinkState>((set, get) => ({
       links: [...state.links, newLink]
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { links, customTags } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ links, customTags }));
   },
   
   updateLink: (id, linkData) => {
@@ -107,6 +154,10 @@ export const useLinkStore = create<LinkState>((set, get) => ({
       )
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { links, customTags } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ links, customTags }));
   },
   
   deleteLink: (id) => {
@@ -119,6 +170,10 @@ export const useLinkStore = create<LinkState>((set, get) => ({
       customTags: state.customTags.filter(tag => usedTags.has(tag))
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { links, customTags } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ links, customTags }));
   },
   
   toggleFavorite: (id) => {
@@ -130,6 +185,10 @@ export const useLinkStore = create<LinkState>((set, get) => ({
       )
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { links, customTags } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ links, customTags }));
   },
   
   updateLastVisited: (id) => {
@@ -141,6 +200,10 @@ export const useLinkStore = create<LinkState>((set, get) => ({
       )
     }));
     get().applyFilters();
+    
+    // Save to localStorage
+    const { links, customTags } = get();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ links, customTags }));
   },
   
   addCustomTag: (tag) => {
@@ -149,6 +212,10 @@ export const useLinkStore = create<LinkState>((set, get) => ({
       set((state) => ({
         customTags: [...state.customTags, normalizedTag]
       }));
+      
+      // Save to localStorage
+      const { links, customTags } = get();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ links, customTags }));
     }
   },
   
@@ -164,6 +231,10 @@ export const useLinkStore = create<LinkState>((set, get) => ({
         }
       }));
       get().applyFilters();
+      
+      // Save to localStorage
+      const { links, customTags } = get();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ links, customTags }));
     }
   },
   

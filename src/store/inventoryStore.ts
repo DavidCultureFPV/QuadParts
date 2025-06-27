@@ -2,13 +2,68 @@ import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import { Part, Category, FilterOptions } from '../models/types';
 
-// Load saved data from localStorage
+// Load saved data from localStorage with enhanced error handling
 const loadFromStorage = <T>(key: string, defaultValue: T): T => {
   try {
     const saved = localStorage.getItem(key);
-    return saved ? JSON.parse(saved) : defaultValue;
+    if (!saved) {
+      console.log(`No saved data found for ${key}, using defaults`);
+      return defaultValue;
+    }
+    
+    const parsed = JSON.parse(saved);
+    
+    // Validate that the parsed data is an array (for parts, categories, etc.)
+    if (Array.isArray(defaultValue) && !Array.isArray(parsed)) {
+      console.error(`Invalid data format for ${key}: expected array, got ${typeof parsed}`);
+      return defaultValue;
+    }
+    
+    // Additional validation for parts array
+    if (key === 'droneParts' && Array.isArray(parsed)) {
+      const validParts = parsed.filter((part, index) => {
+        if (!part || typeof part !== 'object') {
+          console.warn(`Invalid part at index ${index}: not an object`);
+          return false;
+        }
+        if (!part.id || !part.name) {
+          console.warn(`Invalid part at index ${index}: missing required fields (id: ${!!part.id}, name: ${!!part.name})`);
+          return false;
+        }
+        return true;
+      });
+      
+      if (validParts.length !== parsed.length) {
+        console.warn(`Filtered out ${parsed.length - validParts.length} invalid parts from ${key}`);
+        return validParts as T;
+      }
+    }
+    
+    // Additional validation for categories array
+    if (key === 'droneCategories' && Array.isArray(parsed)) {
+      const validCategories = parsed.filter((category, index) => {
+        if (!category || typeof category !== 'object') {
+          console.warn(`Invalid category at index ${index}: not an object`);
+          return false;
+        }
+        if (!category.id || !category.name) {
+          console.warn(`Invalid category at index ${index}: missing required fields (id: ${!!category.id}, name: ${!!category.name})`);
+          return false;
+        }
+        return true;
+      });
+      
+      if (validCategories.length !== parsed.length) {
+        console.warn(`Filtered out ${parsed.length - validCategories.length} invalid categories from ${key}`);
+        return validCategories as T;
+      }
+    }
+    
+    console.log(`Successfully loaded ${key}:`, Array.isArray(parsed) ? `${parsed.length} items` : 'data');
+    return parsed;
   } catch (error) {
     console.error(`Error loading ${key} from localStorage:`, error);
+    console.warn(`Using default data for ${key}`);
     return defaultValue;
   }
 };
@@ -74,7 +129,9 @@ const sampleParts: Part[] = [
     modelNumber: 'ECO II 2306-2400KV',
     dateAdded: new Date().toISOString(),
     notes: 'Good durability, standard for 5-inch builds',
-    inUse: 4
+    inUse: 4,
+    status: 'in-stock',
+    condition: 'new'
   },
   {
     id: '2',
@@ -90,7 +147,9 @@ const sampleParts: Part[] = [
     modelNumber: 'Source One v5',
     dateAdded: new Date().toISOString(),
     notes: 'Favorite frame for freestyle builds',
-    inUse: 1
+    inUse: 1,
+    status: 'in-stock',
+    condition: 'good'
   },
   {
     id: '3',
@@ -106,7 +165,9 @@ const sampleParts: Part[] = [
     modelNumber: 'F405-CTR',
     dateAdded: new Date().toISOString(),
     notes: 'Good for compact builds',
-    inUse: 2
+    inUse: 2,
+    status: 'in-use',
+    condition: 'fair'
   }
 ];
 
@@ -148,7 +209,9 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     searchTerm: '',
     inStock: true,
     sortBy: 'name',
-    sortDirection: 'asc'
+    sortDirection: 'asc',
+    status: ['in-stock', 'in-use'],
+    conditions: ['new', 'good', 'fair', 'poor', 'broken', 'needs-repair']
   },
 
   // Part actions
@@ -347,6 +410,20 @@ export const useInventoryStore = create<InventoryState>((set, get) => ({
     if (filterOptions.categories.length > 0) {
       filtered = filtered.filter((part) => 
         filterOptions.categories.includes(part.category)
+      );
+    }
+    
+    // Apply status filter
+    if (filterOptions.status && filterOptions.status.length > 0) {
+      filtered = filtered.filter((part) => 
+        filterOptions.status.includes(part.status)
+      );
+    }
+    
+    // Apply condition filter
+    if (filterOptions.conditions && filterOptions.conditions.length > 0) {
+      filtered = filtered.filter((part) => 
+        filterOptions.conditions.includes(part.condition)
       );
     }
     

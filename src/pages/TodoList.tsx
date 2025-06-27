@@ -92,7 +92,7 @@ const TodoList: React.FC = () => {
         
         <button 
           onClick={() => setShowNewTodoForm(!showNewTodoForm)}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+          className="liquid-glass flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
         >
           <Plus size={16} />
           <span>Add Task</span>
@@ -101,7 +101,7 @@ const TodoList: React.FC = () => {
       
       {/* New Todo Form */}
       {showNewTodoForm && (
-        <div className="bg-neutral-800 p-4 rounded-lg shadow-lg animate-fade-in">
+        <div className="liquid-glass bg-neutral-800 p-4 rounded-lg shadow-lg animate-fade-in">
           <h3 className="text-lg font-medium text-white mb-4">Add New Task</h3>
           
           <form onSubmit={handleAddTodo} className="space-y-4">
@@ -114,7 +114,7 @@ const TodoList: React.FC = () => {
                 id="title"
                 value={newTodo.title}
                 onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 placeholder="Task title"
                 required
               />
@@ -128,7 +128,7 @@ const TodoList: React.FC = () => {
                 id="description"
                 value={newTodo.description}
                 onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 placeholder="Task description (optional)"
                 rows={3}
               />
@@ -145,7 +145,7 @@ const TodoList: React.FC = () => {
                   ...newTodo, 
                   priority: e.target.value as 'low' | 'medium' | 'high'
                 })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -157,13 +157,13 @@ const TodoList: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowNewTodoForm(false)}
-                className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
+                className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-all duration-300"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors"
+                className="liquid-glass px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-all duration-300"
               >
                 Add Task
               </button>
@@ -175,7 +175,7 @@ const TodoList: React.FC = () => {
       {/* Edit Todo Modal */}
       {selectedTodo && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-neutral-800 p-6 rounded-lg shadow-xl w-full max-w-md animate-fade-in">
+          <div className="liquid-glass bg-neutral-800 p-6 rounded-lg shadow-xl w-full max-w-md animate-fade-in">
             <h3 className="text-lg font-medium text-white mb-4">Edit Task</h3>
             
             <form onSubmit={handleUpdateTodo} className="space-y-4">
@@ -188,7 +188,7 @@ const TodoList: React.FC = () => {
                   id="edit-title"
                   value={selectedTodo.title}
                   onChange={(e) => setSelectedTodo({ ...selectedTodo, title: e.target.value })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   required
                 />
               </div>
@@ -201,7 +201,7 @@ const TodoList: React.FC = () => {
                   id="edit-description"
                   value={selectedTodo.description || ''}
                   onChange={(e) => setSelectedTodo({ ...selectedTodo, description: e.target.value })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   rows={3}
                 />
               </div>
@@ -217,7 +217,7 @@ const TodoList: React.FC = () => {
                     ...selectedTodo, 
                     priority: e.target.value as 'low' | 'medium' | 'high'
                   })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -237,7 +237,7 @@ const TodoList: React.FC = () => {
                     ...selectedTodo, 
                     dateDue: e.target.value ? new Date(e.target.value).toISOString() : undefined
                   })}
-                  className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 />
               </div>
               
@@ -245,13 +245,13 @@ const TodoList: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedTodo(null)}
-                  className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
+                  className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-all duration-300"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors"
+                  className="liquid-glass px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-all duration-300"
                 >
                   Update Task
                 </button>
@@ -266,7 +266,7 @@ const TodoList: React.FC = () => {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => setFilterOptions({ completed: null })}
-            className={`px-3 py-1.5 rounded-lg transition-colors ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 ${
               filterOptions.completed === null
                 ? 'bg-primary-600 text-white'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -276,7 +276,7 @@ const TodoList: React.FC = () => {
           </button>
           <button
             onClick={() => setFilterOptions({ completed: false })}
-            className={`px-3 py-1.5 rounded-lg transition-colors ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 ${
               filterOptions.completed === false
                 ? 'bg-primary-600 text-white'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -286,7 +286,7 @@ const TodoList: React.FC = () => {
           </button>
           <button
             onClick={() => setFilterOptions({ completed: true })}
-            className={`px-3 py-1.5 rounded-lg transition-colors ${
+            className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 ${
               filterOptions.completed === true
                 ? 'bg-primary-600 text-white'
                 : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -304,9 +304,9 @@ const TodoList: React.FC = () => {
                 const newPriorities = filterOptions.priority.includes('high')
                   ? filterOptions.priority.filter(p => p !== 'high')
                   : [...filterOptions.priority, 'high'];
-                setFilterOptions({ priority: newPriorities });
+                setFilterOptions({ priority: newPriorities as ('low' | 'medium' | 'high')[] });
               }}
-              className={`px-2 py-1 text-xs rounded-lg transition-colors ${
+              className={`liquid-glass px-2 py-1 text-xs rounded-lg transition-all duration-300 ${
                 filterOptions.priority.includes('high')
                   ? 'bg-red-500/30 text-red-400'
                   : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -319,9 +319,9 @@ const TodoList: React.FC = () => {
                 const newPriorities = filterOptions.priority.includes('medium')
                   ? filterOptions.priority.filter(p => p !== 'medium')
                   : [...filterOptions.priority, 'medium'];
-                setFilterOptions({ priority: newPriorities });
+                setFilterOptions({ priority: newPriorities as ('low' | 'medium' | 'high')[] });
               }}
-              className={`px-2 py-1 text-xs rounded-lg transition-colors ${
+              className={`liquid-glass px-2 py-1 text-xs rounded-lg transition-all duration-300 ${
                 filterOptions.priority.includes('medium')
                   ? 'bg-yellow-500/30 text-yellow-400'
                   : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -334,9 +334,9 @@ const TodoList: React.FC = () => {
                 const newPriorities = filterOptions.priority.includes('low')
                   ? filterOptions.priority.filter(p => p !== 'low')
                   : [...filterOptions.priority, 'low'];
-                setFilterOptions({ priority: newPriorities });
+                setFilterOptions({ priority: newPriorities as ('low' | 'medium' | 'high')[] });
               }}
-              className={`px-2 py-1 text-xs rounded-lg transition-colors ${
+              className={`liquid-glass px-2 py-1 text-xs rounded-lg transition-all duration-300 ${
                 filterOptions.priority.includes('low')
                   ? 'bg-green-500/30 text-green-400'
                   : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
@@ -350,7 +350,7 @@ const TodoList: React.FC = () => {
         <div>
           <button
             onClick={clearCompleted}
-            className="text-neutral-400 hover:text-neutral-300 text-sm underline transition-colors"
+            className="liquid-glass text-neutral-400 hover:text-neutral-300 text-sm underline transition-all duration-300"
             disabled={!todos.some(todo => todo.completed)}
           >
             Clear completed
@@ -373,7 +373,7 @@ const TodoList: React.FC = () => {
           {filterOptions.completed !== true && (
             <button
               onClick={() => setShowNewTodoForm(true)}
-              className="mt-4 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+              className="mt-4 px-4 py-2 liquid-glass bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
             >
               Add Your First Task
             </button>
@@ -384,7 +384,7 @@ const TodoList: React.FC = () => {
           {filteredTodos.map(todo => (
             <div 
               key={todo.id}
-              className={`group p-4 rounded-lg transition-colors ${
+              className={`liquid-glass group p-4 rounded-lg transition-all duration-300 ${
                 todo.completed 
                   ? 'bg-neutral-800/50 hover:bg-neutral-800' 
                   : 'bg-neutral-800 hover:bg-neutral-700/80'
@@ -393,7 +393,7 @@ const TodoList: React.FC = () => {
               <div className="flex items-start">
                 <button 
                   onClick={() => toggleTodoComplete(todo.id)}
-                  className="flex-shrink-0 mt-1 text-neutral-400 hover:text-primary-400 transition-colors"
+                  className="liquid-glass flex-shrink-0 mt-1 text-neutral-400 hover:text-primary-400 transition-all duration-300"
                 >
                   {todo.completed ? <CheckSquare size={20} /> : <Square size={20} />}
                 </button>
@@ -437,13 +437,13 @@ const TodoList: React.FC = () => {
                     <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => setSelectedTodo(todo)}
-                        className="p-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-white transition-colors"
+                        className="liquid-glass p-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-white transition-all duration-300"
                       >
                         <Edit size={16} />
                       </button>
                       <button
                         onClick={() => handleDelete(todo.id, todo.title)}
-                        className="p-1.5 bg-red-500/80 hover:bg-red-600 rounded text-white transition-colors"
+                        className="liquid-glass p-1.5 bg-red-500/80 hover:bg-red-600 rounded text-white transition-all duration-300"
                       >
                         <Trash2 size={16} />
                       </button>

@@ -13,6 +13,7 @@ const Categories: React.FC = () => {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [newSubcategory, setNewSubcategory] = useState({ name: '', description: '', categoryId: '' });
   const [showNewSubcategoryForm, setShowNewSubcategoryForm] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   
   // Toggle category expansion
   const toggleExpand = (categoryId: string) => {
@@ -55,6 +56,54 @@ const Categories: React.FC = () => {
     } catch (error) {
       console.error('Error creating category:', error);
       addToast('error', 'Failed to create category. Please try again.');
+    }
+  };
+  
+  // Handle category edit
+  const handleEditCategory = (category: Category) => {
+    setEditingCategory(category);
+    setNewCategory({
+      name: category.name,
+      description: category.description || '',
+      color: category.color
+    });
+    setShowNewCategoryForm(true);
+  };
+  
+  // Handle category update
+  const handleUpdateCategory = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!editingCategory || !newCategory.name.trim()) {
+      addToast('error', 'Category name is required');
+      return;
+    }
+    
+    // Check if category name already exists (excluding the current category)
+    const existingCategory = categories.find(cat => 
+      cat.id !== editingCategory.id && 
+      cat.name.toLowerCase() === newCategory.name.toLowerCase()
+    );
+    
+    if (existingCategory) {
+      addToast('error', 'A category with this name already exists');
+      return;
+    }
+    
+    try {
+      updateCategory(editingCategory.id, {
+        name: newCategory.name.trim(),
+        description: newCategory.description.trim(),
+        color: newCategory.color
+      });
+      
+      setNewCategory({ name: '', description: '', color: '#3B82F6' });
+      setShowNewCategoryForm(false);
+      setEditingCategory(null);
+      addToast('success', `Category "${newCategory.name}" updated successfully`);
+    } catch (error) {
+      console.error('Error updating category:', error);
+      addToast('error', 'Failed to update category. Please try again.');
     }
   };
   
@@ -162,8 +211,12 @@ const Categories: React.FC = () => {
             onClick={() => {
               setShowNewSubcategoryForm(false);
               setShowNewCategoryForm(!showNewCategoryForm);
+              if (!showNewCategoryForm) {
+                setEditingCategory(null);
+                setNewCategory({ name: '', description: '', color: '#3B82F6' });
+              }
             }}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+            className="liquid-glass flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
           >
             <Plus size={16} />
             <span>New Category</span>
@@ -174,7 +227,7 @@ const Categories: React.FC = () => {
               setShowNewCategoryForm(false);
               setShowNewSubcategoryForm(!showNewSubcategoryForm);
             }}
-            className="flex items-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-colors"
+            className="liquid-glass flex items-center gap-2 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-all duration-300"
           >
             <Plus size={16} />
             <span>New Subcategory</span>
@@ -182,12 +235,14 @@ const Categories: React.FC = () => {
         </div>
       </div>
       
-      {/* New Category Form */}
+      {/* New/Edit Category Form */}
       {showNewCategoryForm && (
-        <div className="bg-neutral-800 p-4 rounded-lg shadow-lg animate-fade-in">
-          <h3 className="text-lg font-medium text-white mb-4">Add New Category</h3>
+        <div className="liquid-glass bg-neutral-800 p-4 rounded-lg shadow-lg animate-fade-in">
+          <h3 className="text-lg font-medium text-white mb-4">
+            {editingCategory ? 'Edit Category' : 'Add New Category'}
+          </h3>
           
-          <form onSubmit={handleCategorySubmit} className="space-y-4">
+          <form onSubmit={editingCategory ? handleUpdateCategory : handleCategorySubmit} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-neutral-300 mb-1">
                 Name *
@@ -197,7 +252,7 @@ const Categories: React.FC = () => {
                 id="name"
                 value={newCategory.name}
                 onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 placeholder="Category name"
                 required
                 maxLength={50}
@@ -212,7 +267,7 @@ const Categories: React.FC = () => {
                 id="description"
                 value={newCategory.description}
                 onChange={(e) => setNewCategory({ ...newCategory, description: e.target.value })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 placeholder="Category description (optional)"
                 rows={2}
                 maxLength={200}
@@ -235,7 +290,7 @@ const Categories: React.FC = () => {
                   type="text"
                   value={newCategory.color}
                   onChange={(e) => setNewCategory({ ...newCategory, color: e.target.value })}
-                  className="w-32 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="liquid-glass w-32 px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                   placeholder="#RRGGBB"
                   pattern="^#([A-Fa-f0-9]{6})$"
                 />
@@ -247,18 +302,18 @@ const Categories: React.FC = () => {
                 type="button"
                 onClick={() => {
                   setShowNewCategoryForm(false);
+                  setEditingCategory(null);
                   setNewCategory({ name: '', description: '', color: '#3B82F6' });
                 }}
-                className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
+                className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-all duration-300"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                disabled={!newCategory.name.trim()}
-                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="liquid-glass px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
               >
-                Create Category
+                {editingCategory ? 'Save Changes' : 'Create Category'}
               </button>
             </div>
           </form>
@@ -267,24 +322,26 @@ const Categories: React.FC = () => {
       
       {/* New Subcategory Form */}
       {showNewSubcategoryForm && (
-        <div className="bg-neutral-800 p-4 rounded-lg shadow-lg animate-fade-in">
+        <div className="liquid-glass bg-neutral-800 p-4 rounded-lg shadow-lg animate-fade-in">
           <h3 className="text-lg font-medium text-white mb-4">Add New Subcategory</h3>
           
           <form onSubmit={handleSubcategorySubmit} className="space-y-4">
             <div>
-              <label htmlFor="parent-category" className="block text-sm font-medium text-neutral-300 mb-1">
+              <label htmlFor="category" className="block text-sm font-medium text-neutral-300 mb-1">
                 Parent Category *
               </label>
               <select
-                id="parent-category"
+                id="category"
                 value={newSubcategory.categoryId}
                 onChange={(e) => setNewSubcategory({ ...newSubcategory, categoryId: e.target.value })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 required
               >
-                <option value="">Select a parent category</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>{category.name}</option>
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -298,7 +355,7 @@ const Categories: React.FC = () => {
                 id="subcategory-name"
                 value={newSubcategory.name}
                 onChange={(e) => setNewSubcategory({ ...newSubcategory, name: e.target.value })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 placeholder="Subcategory name"
                 required
                 maxLength={50}
@@ -313,7 +370,7 @@ const Categories: React.FC = () => {
                 id="subcategory-description"
                 value={newSubcategory.description}
                 onChange={(e) => setNewSubcategory({ ...newSubcategory, description: e.target.value })}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
                 placeholder="Subcategory description (optional)"
                 rows={2}
                 maxLength={200}
@@ -327,14 +384,13 @@ const Categories: React.FC = () => {
                   setShowNewSubcategoryForm(false);
                   setNewSubcategory({ name: '', description: '', categoryId: '' });
                 }}
-                className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg text-white transition-colors"
+                className="liquid-glass px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-all duration-300"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                disabled={!newSubcategory.name.trim() || !newSubcategory.categoryId}
-                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="liquid-glass px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
               >
                 Create Subcategory
               </button>
@@ -344,147 +400,102 @@ const Categories: React.FC = () => {
       )}
       
       {/* Categories List */}
-      <div className="bg-neutral-800 rounded-lg overflow-hidden">
-        {categories.length === 0 ? (
-          <div className="p-8 text-center">
-            <Package size={48} className="mx-auto text-neutral-600 mb-4" />
-            <h3 className="text-xl font-medium text-neutral-300 mb-2">No categories yet</h3>
-            <p className="text-neutral-400 max-w-md mx-auto">
-              Create categories to organize your drone parts and make them easier to find.
-            </p>
-            <button
-              onClick={() => setShowNewCategoryForm(true)}
-              className="mt-4 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
-            >
-              Add Your First Category
-            </button>
-          </div>
-        ) : (
-          <>
-            <div className="border-b border-neutral-700 py-3 px-4 bg-neutral-700/50">
-              <div className="grid grid-cols-12 text-sm text-neutral-400">
-                <div className="col-span-5">Name</div>
-                <div className="col-span-3">Parts Count</div>
-                <div className="col-span-2">Color</div>
-                <div className="col-span-2 text-right">Actions</div>
+      <div className="space-y-2">
+        {categories.map((category) => (
+          <div key={category.id} className="liquid-glass bg-neutral-800 rounded-lg overflow-hidden">
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => toggleExpand(category.id)}
+                    className="text-neutral-400 hover:text-white transition-colors"
+                  >
+                    <ChevronRight
+                      size={20}
+                      className={`transform transition-transform ${
+                        expandedCategories.includes(category.id) ? 'rotate-90' : ''
+                      }`}
+                    />
+                  </button>
+                  
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: category.color }}
+                    />
+                    <h3 className="text-lg font-medium text-white">{category.name}</h3>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-neutral-400">
+                    {countPartsInCategory(category.name)} parts
+                  </span>
+                  
+                  <button
+                    onClick={() => handleEditCategory(category)}
+                    className="liquid-glass p-1.5 text-neutral-400 hover:text-white transition-all duration-300"
+                  >
+                    <Edit size={16} />
+                  </button>
+                  
+                  <button
+                    onClick={() => handleDeleteCategory(category)}
+                    className="liquid-glass p-1.5 text-neutral-400 hover:text-red-400 transition-all duration-300"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               </div>
+              
+              {category.description && (
+                <p className="mt-1 text-sm text-neutral-400 ml-8">
+                  {category.description}
+                </p>
+              )}
             </div>
             
-            <div className="divide-y divide-neutral-700">
-              {categories.map(category => (
-                <div key={category.id} className="py-1">
-                  <div 
-                    className="grid grid-cols-12 items-center py-3 px-4 hover:bg-neutral-700/30 transition-colors cursor-pointer"
-                    onClick={() => toggleExpand(category.id)}
-                  >
-                    <div className="col-span-5 flex items-center space-x-2">
-                      <ChevronRight
-                        size={18}
-                        className={`text-neutral-500 transition-transform ${
-                          expandedCategories.includes(category.id) ? 'rotate-90' : ''
-                        }`}
-                      />
-                      <span className="font-medium text-white">{category.name}</span>
-                      {category.description && (
-                        <span className="text-neutral-400 text-sm truncate">
-                          - {category.description}
-                        </span>
-                      )}
-                    </div>
-                    <div className="col-span-3 text-neutral-300">
-                      {countPartsInCategory(category.name)} parts
-                    </div>
-                    <div className="col-span-2 flex items-center">
-                      <div
-                        className="w-5 h-5 rounded mr-2"
-                        style={{ backgroundColor: category.color }}
-                      ></div>
-                      <span className="text-neutral-400 text-sm">{category.color}</span>
-                    </div>
-                    <div className="col-span-2 flex justify-end space-x-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Edit category logic here
-                        }}
-                        className="p-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-white transition-colors"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteCategory(category);
-                        }}
-                        className="p-1.5 bg-red-500/80 hover:bg-red-600 rounded text-white transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+            {expandedCategories.includes(category.id) && (
+              <div className="border-t border-neutral-700">
+                {category.subcategories.length === 0 ? (
+                  <div className="p-4 text-center text-neutral-400">
+                    No subcategories yet
                   </div>
-                  
-                  {/* Subcategories */}
-                  {expandedCategories.includes(category.id) && category.subcategories.length > 0 && (
-                    <div className="bg-neutral-800 border-t border-neutral-700 animate-fade-in">
-                      {category.subcategories.map(subcategory => (
-                        <div 
-                          key={subcategory.id}
-                          className="grid grid-cols-12 items-center py-2 px-4 pl-10 hover:bg-neutral-700/30 transition-colors"
-                        >
-                          <div className="col-span-5 flex items-center space-x-2">
-                            <span className="text-neutral-300">{subcategory.name}</span>
+                ) : (
+                  <div className="divide-y divide-neutral-700">
+                    {category.subcategories.map((subcategory) => (
+                      <div key={subcategory.id} className="p-4 pl-12">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className="text-white font-medium">{subcategory.name}</h4>
                             {subcategory.description && (
-                              <span className="text-neutral-500 text-sm truncate">
-                                - {subcategory.description}
-                              </span>
+                              <p className="text-sm text-neutral-400 mt-1">
+                                {subcategory.description}
+                              </p>
                             )}
                           </div>
-                          <div className="col-span-3 text-neutral-400 text-sm">
-                            {countPartsInCategory(category.name, subcategory.name)} parts
-                          </div>
-                          <div className="col-span-2"></div>
-                          <div className="col-span-2 flex justify-end space-x-2">
-                            <button
-                              onClick={() => {
-                                // Edit subcategory logic here
-                              }}
-                              className="p-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-white transition-colors"
-                            >
-                              <Edit size={16} />
-                            </button>
+                          
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-neutral-400">
+                              {countPartsInCategory(category.name, subcategory.name)} parts
+                            </span>
+                            
                             <button
                               onClick={() => handleDeleteSubcategory(category.id, subcategory)}
-                              className="p-1.5 bg-red-500/80 hover:bg-red-600 rounded text-white transition-colors"
+                              className="liquid-glass p-1.5 text-neutral-400 hover:text-red-400 transition-all duration-300"
                             >
                               <Trash2 size={16} />
                             </button>
                           </div>
                         </div>
-                      ))}
-                      <div 
-                        className="py-2 px-4 pl-10 text-primary-400 hover:text-primary-300 hover:bg-neutral-700/30 transition-colors cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setNewSubcategory({ 
-                            name: '', 
-                            description: '', 
-                            categoryId: category.id 
-                          });
-                          setShowNewSubcategoryForm(true);
-                        }}
-                      >
-                        <div className="flex items-center">
-                          <Plus size={16} className="mr-2" />
-                          <span>Add subcategory</span>
-                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </>
-        )}
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

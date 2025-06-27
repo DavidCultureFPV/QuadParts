@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Plus, Filter, ArrowUpDown, Trash2, Edit, Image, 
-  AlignJustify, Grid, SlidersHorizontal, Package
+  AlignJustify, Grid, SlidersHorizontal, Package, CheckCircle, Clock,
+  Star, AlertTriangle, Wrench, XCircle
 } from 'lucide-react';
 import { useInventoryStore } from '../store/inventoryStore';
 import { Part, FilterOptions } from '../models/types';
@@ -57,6 +58,74 @@ const Inventory: React.FC = () => {
       );
     }
   };
+
+  // Get status badge
+  const getStatusBadge = (status: Part['status']) => {
+    switch (status) {
+      case 'in-stock':
+        return (
+          <span className="liquid-glass inline-flex items-center gap-1 px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">
+            <CheckCircle size={12} />
+            In Stock
+          </span>
+        );
+      case 'in-use':
+        return (
+          <span className="liquid-glass inline-flex items-center gap-1 px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs">
+            <Clock size={12} />
+            In Use
+          </span>
+        );
+    }
+  };
+
+  // Get condition badge
+  const getConditionBadge = (condition: Part['condition']) => {
+    switch (condition) {
+      case 'new':
+        return (
+          <span className="liquid-glass inline-flex items-center gap-1 px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">
+            <Star size={12} />
+            New
+          </span>
+        );
+      case 'good':
+        return (
+          <span className="liquid-glass inline-flex items-center gap-1 px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs">
+            <CheckCircle size={12} />
+            Good
+          </span>
+        );
+      case 'fair':
+        return (
+          <span className="liquid-glass inline-flex items-center gap-1 px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs">
+            <AlertTriangle size={12} />
+            Fair
+          </span>
+        );
+      case 'poor':
+        return (
+          <span className="liquid-glass inline-flex items-center gap-1 px-2 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs">
+            <AlertTriangle size={12} />
+            Poor
+          </span>
+        );
+      case 'broken':
+        return (
+          <span className="liquid-glass inline-flex items-center gap-1 px-2 py-1 bg-red-500/20 text-red-400 rounded-full text-xs">
+            <XCircle size={12} />
+            Broken
+          </span>
+        );
+      case 'needs-repair':
+        return (
+          <span className="liquid-glass inline-flex items-center gap-1 px-2 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs">
+            <Wrench size={12} />
+            Needs Repair
+          </span>
+        );
+    }
+  };
   
   return (
     <div className="space-y-6 animate-fade-in">
@@ -69,13 +138,13 @@ const Inventory: React.FC = () => {
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setShowFilterPanel(!showFilterPanel)} 
-            className="flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors text-neutral-200"
+            className="liquid-glass flex items-center gap-2 px-4 py-2 hover:bg-neutral-700 rounded-lg transition-all duration-300 text-neutral-200"
           >
             <Filter size={16} />
             <span>Filter</span>
           </button>
           
-          <div className="flex bg-neutral-800 rounded-lg overflow-hidden">
+          <div className="liquid-glass flex bg-neutral-800 rounded-lg overflow-hidden">
             <button
               onClick={() => setViewMode('grid')}
               className={`p-2 ${viewMode === 'grid' ? 'bg-neutral-700 text-white' : 'text-neutral-400'}`}
@@ -92,7 +161,7 @@ const Inventory: React.FC = () => {
           
           <button 
             onClick={() => navigate('/parts/new')}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors ml-2"
+            className="liquid-glass flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300 ml-2"
           >
             <Plus size={16} />
             <span>New Part</span>
@@ -102,18 +171,18 @@ const Inventory: React.FC = () => {
       
       {/* Filter panel */}
       {showFilterPanel && (
-        <div className="bg-neutral-800 p-4 rounded-lg shadow-lg animate-slide-down">
+        <div className="liquid-glass p-4 rounded-lg shadow-lg animate-slide-down">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-medium text-neutral-200">Filter & Sort</h3>
             <button 
               onClick={() => setShowFilterPanel(false)}
-              className="text-neutral-400 hover:text-neutral-300"
+              className="liquid-glass p-1.5 text-neutral-400 hover:text-neutral-300 rounded transition-all duration-300"
             >
               <SlidersHorizontal size={18} />
             </button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm text-neutral-400 mb-1">Categories</label>
               <div className="space-y-1 max-h-40 overflow-y-auto">
@@ -136,6 +205,76 @@ const Inventory: React.FC = () => {
                       className="text-neutral-300 text-sm cursor-pointer"
                     >
                       {category.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm text-neutral-400 mb-1">Status</label>
+              <div className="space-y-1">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="status-in-stock"
+                    checked={filterOptions.status?.includes('in-stock') ?? true}
+                    onChange={(e) => {
+                      const currentStatus = filterOptions.status || ['in-stock', 'in-use'];
+                      const newStatus = e.target.checked
+                        ? [...currentStatus.filter(s => s !== 'in-stock'), 'in-stock'] as ('in-stock' | 'in-use')[]
+                        : currentStatus.filter(s => s !== 'in-stock') as ('in-stock' | 'in-use')[];
+                      setFilterOptions({ status: newStatus });
+                    }}
+                    className="mr-2"
+                  />
+                  <label htmlFor="status-in-stock" className="text-neutral-300 text-sm cursor-pointer">
+                    In Stock
+                  </label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="status-in-use"
+                    checked={filterOptions.status?.includes('in-use') ?? true}
+                    onChange={(e) => {
+                      const currentStatus = filterOptions.status || ['in-stock', 'in-use'];
+                      const newStatus = e.target.checked
+                        ? [...currentStatus.filter(s => s !== 'in-use'), 'in-use'] as ('in-stock' | 'in-use')[]
+                        : currentStatus.filter(s => s !== 'in-use') as ('in-stock' | 'in-use')[];
+                      setFilterOptions({ status: newStatus });
+                    }}
+                    className="mr-2"
+                  />
+                  <label htmlFor="status-in-use" className="text-neutral-300 text-sm cursor-pointer">
+                    In Use
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm text-neutral-400 mb-1">Condition</label>
+              <div className="space-y-1 max-h-40 overflow-y-auto">
+                {(['new', 'good', 'fair', 'poor', 'broken', 'needs-repair'] as const).map(condition => (
+                  <div key={condition} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`condition-${condition}`}
+                      checked={filterOptions.conditions.includes(condition)}
+                      onChange={(e) => {
+                        const newConditions = e.target.checked
+                          ? [...filterOptions.conditions, condition]
+                          : filterOptions.conditions.filter(c => c !== condition);
+                        setFilterOptions({ conditions: newConditions });
+                      }}
+                      className="mr-2"
+                    />
+                    <label 
+                      htmlFor={`condition-${condition}`}
+                      className="text-neutral-300 text-sm cursor-pointer"
+                    >
+                      {condition === 'needs-repair' ? 'Needs Repair' : condition.charAt(0).toUpperCase() + condition.slice(1)}
                     </label>
                   </div>
                 ))}
@@ -172,7 +311,7 @@ const Inventory: React.FC = () => {
                     sortDirection: sortDirection as 'asc' | 'desc'
                   });
                 }}
-                className="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="liquid-glass w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
               >
                 <option value="name-asc">Name (A-Z)</option>
                 <option value="name-desc">Name (Z-A)</option>
@@ -200,7 +339,7 @@ const Inventory: React.FC = () => {
               </p>
               <button
                 onClick={() => navigate('/parts/new')}
-                className="mt-4 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+                className="mt-4 px-4 py-2 liquid-glass bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
               >
                 Add Your First Part
               </button>
@@ -210,7 +349,7 @@ const Inventory: React.FC = () => {
               {filteredParts.map((part) => (
                 <div 
                   key={part.id}
-                  className="bg-neutral-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow group"
+                  className="liquid-glass rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group"
                 >
                   <div 
                     className="h-48 bg-neutral-700 relative cursor-pointer"
@@ -233,9 +372,9 @@ const Inventory: React.FC = () => {
                           <button 
                             onClick={(e) => {
                               e.stopPropagation();
-                              navigate(`/parts/${part.id}/edit`);
+                              navigate(`/parts/${part.id}`);
                             }}
-                            className="p-1.5 bg-neutral-800/80 rounded-full hover:bg-neutral-700 text-white"
+                            className="liquid-glass p-1.5 bg-neutral-800/80 rounded-full hover:bg-neutral-700 text-white transition-all duration-300"
                           >
                             <Edit size={16} />
                           </button>
@@ -244,7 +383,7 @@ const Inventory: React.FC = () => {
                               e.stopPropagation();
                               handleDeletePart(part.id, part.name);
                             }}
-                            className="p-1.5 bg-red-500/80 rounded-full hover:bg-red-600 text-white"
+                            className="liquid-glass p-1.5 bg-red-500/80 rounded-full hover:bg-red-600 text-white transition-all duration-300"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -257,9 +396,15 @@ const Inventory: React.FC = () => {
                       className="mb-2 cursor-pointer"
                       onClick={() => navigate(`/parts/${part.id}`)}
                     >
-                      <h3 className="font-medium text-white truncate hover:text-primary-400 transition-colors">
-                        {part.name}
-                      </h3>
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="font-medium text-white truncate hover:text-primary-400 transition-colors">
+                          {part.name}
+                        </h3>
+                        <div className="flex flex-col gap-1">
+                          {getStatusBadge(part.status)}
+                          {getConditionBadge(part.condition)}
+                        </div>
+                      </div>
                       <p className="text-neutral-400 text-sm">
                         {part.category} {part.subcategory ? `/ ${part.subcategory}` : ''}
                       </p>
@@ -280,14 +425,14 @@ const Inventory: React.FC = () => {
       
       {/* List View */}
       {viewMode === 'list' && (
-        <div className="bg-neutral-800 rounded-lg overflow-hidden shadow">
+        <div className="liquid-glass rounded-lg overflow-hidden shadow">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="bg-neutral-700">
                   <th className="py-3 px-4 text-left font-medium text-neutral-300">
                     <button 
-                      className="flex items-center gap-2"
+                      className="liquid-glass flex items-center gap-2 px-2 py-1 rounded transition-all duration-300"
                       onClick={() => handleSort('name')}
                     >
                       Part 
@@ -296,16 +441,18 @@ const Inventory: React.FC = () => {
                   </th>
                   <th className="py-3 px-4 text-left font-medium text-neutral-300">
                     <button 
-                      className="flex items-center gap-2"
+                      className="liquid-glass flex items-center gap-2 px-2 py-1 rounded transition-all duration-300"
                       onClick={() => handleSort('category')}
                     >
                       Category 
                       <ArrowUpDown size={14} className="text-neutral-400" />
                     </button>
                   </th>
+                  <th className="py-3 px-4 text-left font-medium text-neutral-300">Status</th>
+                  <th className="py-3 px-4 text-left font-medium text-neutral-300">Condition</th>
                   <th className="py-3 px-4 text-left font-medium text-neutral-300">
                     <button 
-                      className="flex items-center gap-2"
+                      className="liquid-glass flex items-center gap-2 px-2 py-1 rounded transition-all duration-300"
                       onClick={() => handleSort('quantity')}
                     >
                       Quantity 
@@ -320,13 +467,13 @@ const Inventory: React.FC = () => {
               <tbody>
                 {filteredParts.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-neutral-400">
+                    <td colSpan={8} className="py-8 text-center text-neutral-400">
                       No parts found. Try adjusting filters or add new parts.
                     </td>
                   </tr>
                 ) : (
                   filteredParts.map((part) => (
-                    <tr key={part.id} className="border-t border-neutral-700 hover:bg-neutral-700/30 transition-colors">
+                    <tr key={part.id} className="liquid-glass border-t border-neutral-700 hover:bg-neutral-700/30 transition-all duration-300">
                       <td className="py-3 px-4">
                         <div 
                           className="flex items-center cursor-pointer" 
@@ -355,20 +502,22 @@ const Inventory: React.FC = () => {
                         {part.category}
                         {part.subcategory && <span className="text-neutral-500 text-sm ml-1">/ {part.subcategory}</span>}
                       </td>
+                      <td className="py-3 px-4">{getStatusBadge(part.status)}</td>
+                      <td className="py-3 px-4">{getConditionBadge(part.condition)}</td>
                       <td className="py-3 px-4">{getStockStatus(part.quantity, part.inUse)}</td>
                       <td className="py-3 px-4 text-neutral-300">${part.price.toFixed(2)}</td>
                       <td className="py-3 px-4 text-neutral-300">{part.location}</td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end space-x-2">
                           <button
-                            onClick={() => navigate(`/parts/${part.id}/edit`)}
-                            className="p-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-white transition-colors"
+                            onClick={() => navigate(`/parts/${part.id}`)}
+                            className="liquid-glass p-1.5 bg-neutral-700 hover:bg-neutral-600 rounded text-white transition-all duration-300"
                           >
                             <Edit size={16} />
                           </button>
                           <button
                             onClick={() => handleDeletePart(part.id, part.name)}
-                            className="p-1.5 bg-red-500/80 hover:bg-red-600 rounded text-white transition-colors"
+                            className="liquid-glass p-1.5 bg-red-500/80 hover:bg-red-600 rounded text-white transition-all duration-300"
                           >
                             <Trash2 size={16} />
                           </button>

@@ -28,6 +28,8 @@ const Header: React.FC = () => {
         return 'Links';
       case '/todo':
         return 'Things to Do';
+      case '/liquid-demo':
+        return 'Liquid Glass Demo';
       case '/settings':
         return 'Settings';
       default:
@@ -70,7 +72,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-neutral-900 py-4 px-6 flex items-center justify-between border-b border-neutral-800">
+    <header className="liquid-header py-4 px-6 flex items-center justify-between">
       <h1 className="text-xl font-semibold text-white lg:ml-0 ml-8">{getPageTitle()}</h1>
       
       <div className="flex items-center space-x-4">
@@ -78,18 +80,18 @@ const Header: React.FC = () => {
           <input
             type="text"
             placeholder="Search parts..."
-            className="bg-neutral-800 text-white px-4 py-2 rounded-full pl-10 w-64 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
+            className="liquid-input text-white px-4 py-2 rounded-full pl-10 w-64 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
             value={searchTerm}
             onChange={handleSearchChange}
           />
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 h-4 w-4" />
         </form>
         
-        <button className="p-2 rounded-full hover:bg-neutral-800 transition-colors">
+        <button className="p-2 rounded-full liquid-glass hover:bg-neutral-800 transition-colors">
           <Bell className="h-5 w-5 text-neutral-300" />
         </button>
         
-        <button className="p-2 rounded-full hover:bg-neutral-800 transition-colors">
+        <button className="p-2 rounded-full liquid-glass hover:bg-neutral-800 transition-colors">
           <Settings className="h-5 w-5 text-neutral-300" />
         </button>
       </div>

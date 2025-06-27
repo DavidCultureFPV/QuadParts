@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, Camera, Tag } from 'lucide-react';
+import { Plus, Search, Camera, Tag, X } from 'lucide-react';
 import { useGalleryStore } from '../store/galleryStore';
 import { GalleryItem } from '../models/types';
 import { useToaster } from '../components/ui/Toaster';
 
 const Gallery: React.FC = () => {
   const navigate = useNavigate();
-  const { filteredItems, filterOptions, setFilterOptions } = useGalleryStore();
+  const { filteredItems, filterOptions, setFilterOptions, customTags } = useGalleryStore();
   const { addToast } = useToaster();
   
-  // Get all unique tags
+  // Get all unique tags from current items
   const allTags = Array.from(
     new Set(
       filteredItems.flatMap(item => item.tags)
     )
   ).sort();
+  
+  // Get all available tags (including unused ones)
+  const availableTags = Array.from(new Set([...allTags, ...customTags])).sort();
   
   // Format date
   const formatDate = (dateString: string) => {
@@ -25,7 +28,19 @@ const Gallery: React.FC = () => {
       day: 'numeric'
     });
   };
-  
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setFilterOptions({ searchTerm: '', tags: [] });
+    addToast('success', 'All filters cleared');
+  };
+
+  // Remove specific tag filter
+  const removeTagFilter = (tagToRemove: string) => {
+    const newTags = filterOptions.tags.filter(t => t !== tagToRemove);
+    setFilterOptions({ tags: newTags });
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
@@ -36,7 +51,7 @@ const Gallery: React.FC = () => {
         
         <button
           onClick={() => navigate('/gallery/new')}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+          className="liquid-glass flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
         >
           <Plus size={16} />
           <span>Add Build</span>
@@ -44,38 +59,97 @@ const Gallery: React.FC = () => {
       </div>
       
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 h-4 w-4" />
-          <input
-            type="text"
-            placeholder="Search gallery..."
-            value={filterOptions.searchTerm}
-            onChange={(e) => setFilterOptions({ searchTerm: e.target.value })}
-            className="w-full pl-10 pr-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-          />
-        </div>
-        
-        <div className="flex flex-wrap gap-2">
-          {allTags.map(tag => (
+      <div className="liquid-glass border border-white/10 rounded-lg p-4 backdrop-blur-sm">
+        <div className="flex flex-wrap items-center gap-4 mb-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 h-4 w-4" />
+            <input
+              type="text"
+              placeholder="Search gallery..."
+              value={filterOptions.searchTerm}
+              onChange={(e) => setFilterOptions({ searchTerm: e.target.value })}
+              className="liquid-glass w-full pl-10 pr-4 py-2 bg-neutral-800 border border-neutral-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-300"
+            />
+          </div>
+          
+          {(filterOptions.searchTerm || filterOptions.tags.length > 0) && (
             <button
-              key={tag}
-              onClick={() => {
-                const newTags = filterOptions.tags.includes(tag)
-                  ? filterOptions.tags.filter(t => t !== tag)
-                  : [...filterOptions.tags, tag];
-                setFilterOptions({ tags: newTags });
-              }}
-              className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
-                filterOptions.tags.includes(tag)
-                  ? 'bg-primary-500/20 text-primary-400'
-                  : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700'
-              }`}
+              onClick={clearAllFilters}
+              className="liquid-glass flex items-center gap-2 px-3 py-2 bg-neutral-700 hover:bg-neutral-600 text-neutral-300 rounded-lg transition-all duration-300 text-sm"
             >
-              <Tag size={14} />
-              <span>{tag}</span>
+              <X size={14} />
+              Clear All
             </button>
-          ))}
+          )}
+        </div>
+
+        {/* Active Filters Display */}
+        {(filterOptions.searchTerm || filterOptions.tags.length > 0) && (
+          <div className="mb-4 p-3 liquid-glass border border-white/20 rounded-lg backdrop-blur-sm">
+            <div className="text-sm text-neutral-400 mb-2">Active Filters:</div>
+            <div className="flex flex-wrap gap-2">
+              {filterOptions.searchTerm && (
+                <span className="liquid-glass px-2 py-1 bg-primary-500/20 text-primary-400 rounded text-sm flex items-center gap-2">
+                  Search: "{filterOptions.searchTerm}"
+                  <button
+                    onClick={() => setFilterOptions({ searchTerm: '' })}
+                    className="text-primary-400 hover:text-primary-300 transition-colors"
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
+              )}
+              {filterOptions.tags.map(tag => (
+                <span
+                  key={tag}
+                  className="liquid-glass px-2 py-1 bg-secondary-500/20 text-secondary-400 rounded text-sm flex items-center gap-2"
+                >
+                  <Tag size={12} />
+                  {tag}
+                  <button
+                    onClick={() => removeTagFilter(tag)}
+                    className="text-secondary-400 hover:text-secondary-300 transition-colors"
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Tag Filter Buttons */}
+        <div>
+          <div className="text-sm text-neutral-400 mb-2 flex items-center gap-2">
+            <Tag size={14} />
+            Filter by Tags:
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {availableTags.map(tag => (
+              <button
+                key={tag}
+                onClick={() => {
+                  const newTags = filterOptions.tags.includes(tag)
+                    ? filterOptions.tags.filter(t => t !== tag)
+                    : [...filterOptions.tags, tag];
+                  setFilterOptions({ tags: newTags });
+                }}
+                className={`liquid-glass px-3 py-1.5 rounded-lg transition-all duration-300 flex items-center gap-2 ${
+                  filterOptions.tags.includes(tag)
+                    ? 'bg-primary-500/20 text-primary-400 border border-primary-500/30'
+                    : 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 border border-white/10'
+                }`}
+              >
+                <Tag size={12} />
+                <span>{tag}</span>
+                {filterOptions.tags.includes(tag) && (
+                  <span className="text-xs bg-primary-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
+                    {filterOptions.tags.filter(t => t === tag).length}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       
@@ -89,7 +163,7 @@ const Gallery: React.FC = () => {
           </p>
           <button
             onClick={() => navigate('/gallery/new')}
-            className="mt-4 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
+            className="mt-4 px-4 py-2 liquid-glass bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300"
           >
             Add Your First Build
           </button>
@@ -99,7 +173,7 @@ const Gallery: React.FC = () => {
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="bg-neutral-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer group"
+              className="liquid-glass bg-neutral-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
               onClick={() => navigate(`/gallery/${item.id}`)}
             >
               <div className="aspect-w-16 aspect-h-9 bg-neutral-900">
@@ -129,8 +203,9 @@ const Gallery: React.FC = () => {
                   {item.tags.map(tag => (
                     <span
                       key={tag}
-                      className="px-2 py-1 bg-neutral-700/50 text-neutral-300 rounded text-xs"
+                      className="liquid-glass px-2 py-1 bg-neutral-700/50 text-neutral-300 rounded text-xs flex items-center gap-1"
                     >
+                      <Tag size={10} />
                       {tag}
                     </span>
                   ))}
