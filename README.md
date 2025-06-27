@@ -6,7 +6,7 @@ Drone / FPV inventory application where you can keep track of your parts, builds
 <BR>
 Demo: https://fpv.builders/
 ---
-Notable Updates:
+<b>Notable Updates:</b>
 
   1. Added the liquid glass effect as seen on Iphones. demo page can be see at https://fpv.builders/liquid-demo or on your local machine at localhost:5173/liquid-demo
   2. Themes are now working and you have the option to to customize your own ( still working threw kinks on the "custom" theming)
@@ -17,8 +17,9 @@ Notable Updates:
 ---
 INSTALLING from Previous Versions:
 FOR THOSE WHO'S UPGRADING FROM THE RELEASE ON 6/10/2025, PLEASE EXPORT YOUR DATA BEFORE INSTALLING THIS VERSION. ONCE YOU INSTALL THIS VERSION, PLEASE GO TO THE "SETTINGS" PAGE AND IMPORT YOUR DATA. IF ANY OF YOU INVENTORY ITEMS OR ITEMS IN ANY CATEGORY IS NOT PRESENT, PLEASE GO TO THE "SETTINGS" AND AND CLICK "MIGRATE<category-name> in the Data Management section. for example:
+---
 ![image](https://github.com/user-attachments/assets/0bab302a-6785-447d-8ec1-a3846d9a4e66)
-
+---
 **First time user INSTALL Instructions- For New Users of QuadParts**
 1. Clone this repo.
 2. Ensure that you have Node installed on your development machine ( windows, linux or other)
