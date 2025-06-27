@@ -21,6 +21,7 @@ Demo: https://fpv.builders/
   6.  Added A Flight Log Section so you can add relevant information about your flights rips
 ---
 INSTALLING from Previous Versions:
+<BR>
 FOR THOSE WHO'S UPGRADING FROM THE RELEASE ON 6/10/2025, PLEASE EXPORT YOUR DATA BEFORE INSTALLING THIS VERSION. ONCE YOU INSTALL THIS VERSION, PLEASE GO TO THE "SETTINGS" PAGE AND IMPORT YOUR DATA. IF ANY OF YOU INVENTORY ITEMS OR ITEMS IN ANY CATEGORY IS NOT PRESENT, PLEASE GO TO THE "SETTINGS" AND AND CLICK "MIGRATE<category-name> in the Data Management section. for example:
 ---
 ![image](https://github.com/user-attachments/assets/0bab302a-6785-447d-8ec1-a3846d9a4e66)
