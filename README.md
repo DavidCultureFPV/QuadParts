@@ -83,3 +83,78 @@ _above commands needs to be ran from from within the QuadParts folder. terminal-
    Alternate Project Soon: Currently working on a client/ server variation of this app. 
 
 Demo: https://fpv.builders/
+---
+<BR>
+<b>FULL APP FEATURE SET</b>
+### 🏷️ Categories & Organization
+- **Hierarchical Categories**: Create main categories with subcategories
+- **Custom Colors & Icons**: Visual organization with color-coded categories
+- **Flexible Classification**: Organize parts by type, manufacturer, or custom criteria
+
+### 📍 Storage Locations
+- **Location Management**: Track where parts are stored (shelves, drawers, boxes, etc.)
+- **Capacity Tracking**: Monitor storage capacity and current usage
+- **Smart Organization**: Keep inventory organized across multiple storage areas
+
+### 🔧 Build Projects
+- **Build Notes**: Document drone builds with detailed notes and progress tracking
+- **Parts Integration**: Link parts to specific builds and track usage
+- **Progress Tracking**: Monitor build status (planning, in-progress, completed, archived)
+- **Cost Calculation**: Track total build costs and individual part expenses
+- **Image Documentation**: Add multiple images to document build progress
+- **Specifications**: Record technical specifications for each build
+
+### 📊 Dashboard & Analytics
+- **Real-time Statistics**: View total parts, inventory value, and low stock alerts
+- **Quick Overview**: See recent parts, pending tasks, and important metrics
+- **Visual Indicators**: Color-coded status indicators and progress bars
+- **Export Capabilities**: Export data in various formats
+
+### ✅ Task Management
+- **Todo Lists**: Create and manage tasks related to drone projects
+- **Priority Levels**: Set high, medium, or low priority for tasks
+- **Due Dates**: Track task deadlines and completion dates
+- **Part Integration**: Link tasks to specific parts or builds
+
+### 📸 Gallery
+- **Image Management**: Organize drone photos and project images
+- **Tagging System**: Add tags for easy categorization and search
+- **Detailed Viewing**: Full-screen image viewing with metadata
+- **Specifications**: Store technical details with gallery items
+
+### 🔗 Resource Links
+- **Bookmark Management**: Save useful websites, YouTube videos, and resources
+- **Categorization**: Organize links by type (website, YouTube, blog, store, other)
+- **Favorites System**: Mark important links for quick access
+- **Visit Tracking**: Monitor when links were last visited
+
+### ✈️ Flight Log
+- **Flight Recording**: Log flight details including date, location, and duration
+- **Issue Tracking**: Document problems encountered during flights
+- **Drone Tracking**: Associate flights with specific drones
+- **Export Functionality**: Export flight logs to CSV format
+- **Search & Filter**: Find specific flights by various criteria
+
+### ⚙️ Settings & Customization
+- **Theme Support**: Light and dark mode with customizable themes
+- **Data Management**: Import/export functionality for data backup
+- **User Preferences**: Customize application behavior and appearance
+- **System Configuration**: Adjust application settings and defaults
+
+### 📱 Progressive Web App (PWA)
+- **Offline Support**: Access core features without internet connection
+- **App-like Experience**: Install as a native app on supported devices
+- **Push Notifications**: Get alerts for low stock and important updates
+- **Responsive Design**: Optimized for all screen sizes and devices
+
+## 🛠️ Technology Stack
+
+- **Frontend**: React 18.3.1 with TypeScript 5.3.3
+- **Styling**: Tailwind CSS 3.4.1 with custom design system
+- **State Management**: Zustand for lightweight state management
+- **Routing**: React Router DOM 6.22.3
+- **Build Tool**: Vite 6.3.5 for fast development and building
+- **PWA**: Vite PWA plugin with service worker support
+- **Icons**: Lucide React for consistent iconography
+- **Linting**: ESLint with TypeScript and React rules
+
