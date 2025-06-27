@@ -62,6 +62,7 @@ _above commands needs to be ran from from within the QuadParts folder. terminal-
    On your local machine, pull up the browser and go to this address localhost:5173
    Note: All your personal exports can be modified on the official site fpv.builders if needed. just be sure to export your data once completed. 
 ---
+Alternate installations methods-Advanced- https://github.com/hasmeni/QuadParts/blob/main/Alternate_install_methods.md
    <b>Note:</b> If the new version does not show up in your browser, you might have to clear your browser cache.
     Unfortunately by doing so you might loose your data if you installed the initial version released before 6/10/2025.
     For all others, who installed the version after 6/10/2025, simply export your data from the settings page, and import your complete date into this version 6/26/2025.
