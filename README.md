@@ -3,7 +3,10 @@
 Drone / FPV inventory application where you can keep track of your parts, builds, notes and more
 <BR>
 
-
+![Drone Parts Inventory](https://img.shields.io/badge/React-18.3.1-blue?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3.3-blue?style=for-the-badge&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4.1-38B2AC?style=for-the-badge&logo=tailwind-css)
+![PWA](https://img.shields.io/badge/PWA-Ready-green?style=for-the-badge&logo=pwa)
 ### 📦 App Features
 - **Complete Parts Tracking**: Add, edit, and delete drone parts with detailed information
 - **Multi-Image Support**: Upload and manage multiple images per part
