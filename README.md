@@ -27,16 +27,18 @@ FOR THOSE WHO'S UPGRADING FROM THE RELEASE ON 6/10/2025, PLEASE EXPORT YOUR DATA
 ![image](https://github.com/user-attachments/assets/0bab302a-6785-447d-8ec1-a3846d9a4e66)
 ---
 **First time user INSTALL Instructions- For New Users of QuadParts**
-1. Clone this repo.
+<BR>
+1. Clone this repo. unzip the file. 
 2. Ensure that you have Node installed on your development machine ( windows, linux or other)
    Follow the tutorial here to install the latest version of node https://www.geeksforgeeks.org/how-to-download-and-install-node-js-and-npm/
 
-   After Node /NPM  is installed on your system, open up your terminal or command prompt screen and run the two commands below to deploy:
+   After Node /NPM  is installed on your system, open up your terminal  or command prompt screen and run the two commands below to deploy:
    
    <code>npm install  #installs dependencies</code>
 
    <code>npm run dev  #to deploy the code</code>
-
+   <BR>
+_above commands needs to be ran from from within the QuadParts folder. terminal-->cd /where/you/have/quadparts/unzipped_
    **Note:** _If you want to be able to get to QuadParts from other devices on your network, run the command below_
    <code> npm run dev -- --host</code>
    <i> You might have to run the npm audit fix if prompted to do so. Dont worry the app wont break by doing so</i>
