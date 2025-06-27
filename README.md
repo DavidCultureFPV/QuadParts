@@ -1,6 +1,18 @@
 # QuadParts - updated 06-26-2025 
 
 Drone / FPV inventory application where you can keep track of your parts, builds, notes and more
+<BR>
+<b>Features</b>
+
+### 📦 Inventory Management
+- **Complete Parts Tracking**: Add, edit, and delete drone parts with detailed information
+- **Multi-Image Support**: Upload and manage multiple images per part
+- **Advanced Filtering**: Filter by category, status, condition, and search terms
+- **Stock Management**: Track quantities, in-use items, and low stock alerts
+- **Condition Tracking**: Monitor part conditions (new, good, fair, poor, broken, needs-repair)
+- **Price Tracking**: Monitor inventory value and individual part costs
+- **Grid & List Views**: Flexible viewing options for different preferences
+- **Plus much more...
 ---
 ![image](https://github.com/user-attachments/assets/73340e88-a524-4f4d-9b30-5d2abfee0017)
 
