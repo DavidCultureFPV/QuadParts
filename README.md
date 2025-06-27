@@ -2,7 +2,8 @@
 
 Drone / FPV inventory application where you can keep track of your parts, builds, notes and more
 ---
-![image](https://github.com/user-attachments/assets/4fb90958-0977-45b0-87c6-5324d1d288e9)
+![image](https://github.com/user-attachments/assets/73340e88-a524-4f4d-9b30-5d2abfee0017)
+
 
 
 <BR>
