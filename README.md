@@ -80,6 +80,7 @@ Alternate installations methods-Advanced- https://github.com/hasmeni/QuadParts/b
 ---
    To DO:
    Making Progress with the Android Implementation of this app. Also the Docker version should be released next week.... hopefully :) .
+   -Removing the animation in the background of the settings page. Users reported issues with firefox. 
 ---
 
    Alternate Project Soon: Currently working on a client/ server variation of this app. 
