@@ -8,6 +8,7 @@ A comprehensive, modern web application for managing drone parts inventory, buil
 ![PWA](https://img.shields.io/badge/PWA-Ready-green?style=for-the-badge&logo=pwa)
 
 ## 🚀 All the installation methods below is experimental and not fully tested. These methods below is intended for the more experienced user. Build using the instructions below at your own risk.
+If you are not that experienced, its ok. Follow the simpler installation method which can be found here: https://github.com/hasmeni/QuadParts/blob/main/README.md
 
 ## 📋 Prerequisites
 
