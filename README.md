@@ -19,6 +19,7 @@ Demo: https://fpv.builders/
   4. Editing inventory item issues seen in previous versions is now fixed
   5.  Currency selection formatting fixed
   6.  Added A Flight Log Section so you can add relevant information about your flights rips
+  7.  Other minor tweaks to the UI along with better local storage management.
 ---
 INSTALLING from Previous Versions:
 <BR>
