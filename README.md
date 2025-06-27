@@ -1,7 +1,9 @@
 # QuadParts - updated 06-26-2025 
 
 Drone / FPV inventory application where you can keep track of your parts, builds, notes and more
-![image](https://github.com/user-attachments/assets/84a24a3c-811d-4a52-a9a5-b7ffd32ea473)
+---
+![image](https://github.com/user-attachments/assets/4fb90958-0977-45b0-87c6-5324d1d288e9)
+
 
 <BR>
 Demo: https://fpv.builders/
