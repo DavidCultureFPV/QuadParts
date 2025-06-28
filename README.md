@@ -67,6 +67,12 @@ Alternate installations methods-Advanced- https://github.com/hasmeni/QuadParts/b
    <b>Note:</b> If the new version does not show up in your browser, you might have to clear your browser cache.
     Unfortunately by doing so you might loose your data if you installed the initial version released before 6/10/2025.
     For all others, who installed the version after 6/10/2025, simply export your data from the settings page, and import your complete date into this version 6/26/2025.
+
+---
+
+Installing on Android:
+
+You can find the official APK here: https://github.com/hasmeni/QuadParts/releases/tag/apks
    
 ---
    <b> Previous Notable Changes: 06 10 2025</b>
