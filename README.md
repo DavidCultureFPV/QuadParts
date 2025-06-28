@@ -1,4 +1,4 @@
-# QuadParts - updated 06-28-2025 - removed video animation from the settings page
+# QuadParts - updated 06-28-2025
 
 Drone / FPV inventory application where you can keep track of your parts, builds, notes and more
 <BR>
