@@ -163,11 +163,11 @@ const Settings: React.FC = () => {
     });
 
     const backupData = {
-      version: '1.0.0',
+      version: '3.2',
       timestamp: new Date().toISOString(),
       appInfo: {
         name: 'Drone Parts Inventory',
-        version: '1.0.0',
+        version: '3.2',
         description: 'Complete backup of all inventory data'
       },
       data: {
@@ -968,21 +968,10 @@ const Settings: React.FC = () => {
   };
   
   return (
-    <div className="relative min-h-screen">
-      {/* Background Video */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
-        <iframe
-          src="https://www.youtube.com/embed/ORWrf5w4yS0?autoplay=1&mute=1&loop=1&playlist=ORWrf5w4yS0&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=window.location.origin"
-          title="Settings Background Video"
-          className="absolute top-0 left-0 w-full h-full min-w-full min-h-full object-cover pointer-events-none"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-        {/* Video Overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-      </div>
-      
+    <div
+      className="relative min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: 'url(/qpv3.png)' }}
+    >
       {/* Content Container */}
       <div className="relative z-10 space-y-6 animate-fade-in max-w-4xl mx-auto p-6">
         <h2 className="text-2xl font-bold text-neutral-200">Settings</h2>
