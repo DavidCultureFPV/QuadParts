@@ -26,6 +26,7 @@ This guide explains how to package your Vite/React app as an Android APK. The mo
 
 3. **Add Android platform:**
    ```bash
+   npm install @capacitor/android 
    npx cap add android
    ```
 
